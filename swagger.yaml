@@ -1,0 +1,89 @@
+swagger: '2.0'
+info:
+  version: 0.1.0
+  title: People Api
+  description: People API
+  termsOfService: 'https://github.com/AlvaroIsrael/medprev-backend/blob/master/README.md'
+  contact:
+    email: israel.nunes.leite@gmail.com
+  license:
+    name: AGPL-3.0-or-later
+    url: 'https://github.com/AlvaroIsrael/medprev-backend/blob/master/LICENCE.md'
+
+securityDefinitions:
+  JWT:
+    description: ''
+    type: apiKey
+    name: Authorization
+    in: header
+
+host: 'localhost:3333'
+
+basePath: /api/v1
+
+tags:
+  - name: People
+    description: Operations about people.
+    externalDocs:
+      description: Find out more
+      url: 'http://swagger.io'
+  - name: Addresses
+    description: Operations about addresses
+    externalDocs:
+      description: Find out more about our addresses.
+      url: 'http://swagger.io'
+
+schemes:
+  - http
+
+definitions:
+  Person:
+    required:
+      - kind
+      - name
+      - email
+      - password
+      - landlinePhoneNumber
+      - mobilePhoneNumber
+      - avatarUrl
+    properties:
+      kind:
+        type: string
+        example: 'legal'
+      name:
+        type: string
+        example: 'Moltendrifter Guardian'
+      email:
+        type: string
+        example: 'moltendrifter@gmail.com'
+      password:
+        type: string
+        example: 'mysupersecurepassword'
+      landlinePhoneNumber:
+        type: string
+        example: '55 31 3333-9999'
+      mobilePhoneNumber:
+        type: string
+        example: '55 31 99999-9999'
+      avatarUrl:
+        type: string
+        example: 'https://url.moltendrifter.io/'
+
+paths:
+  /api/v1/people:
+    post:
+      tags:
+        - People
+      summary: Add a new person to the database.
+      description: "Only people with 'admin' role, can add perform this action."
+      parameters:
+        - in: body
+          name: body
+          description: New person
+          required: false
+          schema:
+            $ref: '#/definitions/Person'
+      responses:
+        '200':
+          description: sucesso
+      security: [ ]
