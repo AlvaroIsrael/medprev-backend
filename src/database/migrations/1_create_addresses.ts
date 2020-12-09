@@ -6,8 +6,8 @@ export async function up(knex: Knex): Promise<SchemaBuilder> {
     tableBuilder.string('personId').notNullable().references('personId').inTable('people');
     tableBuilder.string('street').notNullable();
     tableBuilder.string('number').notNullable();
-    tableBuilder.string('complement').notNullable();
-    tableBuilder.string('district').notNullable();
+    tableBuilder.string('complement').nullable();
+    tableBuilder.string('district').nullable();
     tableBuilder.string('city').notNullable();
     tableBuilder.string('state').notNullable();
     tableBuilder.string('zipCode').notNullable();

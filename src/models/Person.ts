@@ -1,7 +1,7 @@
 abstract class Person {
   personId: string;
 
-  kind: 'legal' | 'private';
+  kind: 'legal' | 'natural';
 
   role: 'admin' | 'default';
 

@@ -1,6 +1,6 @@
 import { sign } from 'jsonwebtoken';
 import { compare } from 'bcryptjs';
-import PeopleRepository from '@/repositories/PeopleRepository';
+import PeopleRepository from '../repositories/PeopleRepository';
 import Person from '../models/Person';
 import AppError from '../errors/AppError';
 import authConfig from '../config/auth';

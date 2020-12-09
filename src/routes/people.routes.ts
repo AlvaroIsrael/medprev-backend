@@ -30,7 +30,7 @@ peopleRouter.post('/', async (request, response) => {
     const user = await createPersonService.execute({
       kind,
       role,
-      document: document.replace(/[\s.-]*/gim, ''),
+      document: document.match(/[0-9]+/g).join(''),
       corporateName,
       name,
       email,

@@ -1,7 +1,8 @@
 import { hash } from 'bcryptjs';
-import PeopleRepository from '@/repositories/PeopleRepository';
-import naturalPersonSchema from '@/helpers/naturalPerson.schema';
+import PeopleRepository from '../repositories/PeopleRepository';
+import naturalPersonSchema from '../helpers/naturalPerson.schema';
 import AppError from '../errors/AppError';
+import legalPersonSchema from '../helpers/legalPerson.schema';
 
 interface IPersonRequest {
   kind: string;
@@ -43,20 +44,37 @@ class CreatePersonService {
     sex,
     birthDate,
   }: IPersonRequest): Promise<IPersonResponse> => {
-    const allFieldsAreValid = await naturalPersonSchema.validateAsync({
-      kind,
-      role,
-      document,
-      corporateName,
-      name,
-      email,
-      password,
-      landlinePhoneNumber,
-      mobilePhoneNumber,
-      avatarUrl,
-      sex,
-      birthDate,
-    });
+    let allFieldsAreValid;
+    if (kind === 'legal') {
+      allFieldsAreValid = await legalPersonSchema.validateAsync({
+        kind,
+        role,
+        document,
+        corporateName,
+        name,
+        email,
+        password,
+        landlinePhoneNumber,
+        mobilePhoneNumber,
+        avatarUrl,
+        sex,
+        birthDate,
+      });
+    } else {
+      allFieldsAreValid = await naturalPersonSchema.validateAsync({
+        kind,
+        role,
+        document,
+        name,
+        email,
+        password,
+        landlinePhoneNumber,
+        mobilePhoneNumber,
+        avatarUrl,
+        sex,
+        birthDate,
+      });
+    }
 
     if (!allFieldsAreValid) {
       throw new AppError(allFieldsAreValid);

@@ -1,6 +1,10 @@
 import Joi, { CustomHelpers } from '@hapi/joi';
 
 const validateDocument = (cpf: string, helper: CustomHelpers) => {
+  const invalidDocument = 'it is not in the correct format or is invalid.';
+
+  cpf = cpf.trim();
+
   if (
     !cpf ||
     cpf.length !== 11 ||
@@ -15,7 +19,7 @@ const validateDocument = (cpf: string, helper: CustomHelpers) => {
     cpf === '88888888888' ||
     cpf === '99999999999'
   ) {
-    return helper.error('Invalid CPF');
+    throw new Error(invalidDocument);
   }
 
   let soma = 0;
@@ -28,7 +32,7 @@ const validateDocument = (cpf: string, helper: CustomHelpers) => {
   if (resto === 10 || resto === 11) resto = 0;
 
   if (resto !== parseInt(cpf.substring(9, 10), 10)) {
-    return helper.error('Invalid CPF');
+    throw new Error(invalidDocument);
   }
 
   soma = 0;
@@ -39,18 +43,18 @@ const validateDocument = (cpf: string, helper: CustomHelpers) => {
 
   if (resto === 10 || resto === 11) resto = 0;
   if (resto !== parseInt(cpf.substring(10, 11), 10)) {
-    return helper.error('Invalid CPF');
+    throw new Error(invalidDocument);
   }
 
   return cpf;
 };
 
 const naturalPersonSchema = Joi.object({
-  kind: Joi.string().allow(['legal', 'private']).required(),
+  kind: Joi.string().allow('legal', 'natural').required(),
 
-  role: Joi.string().allow(['admin', 'default']).required(),
+  role: Joi.string().allow('admin', 'default').required(),
 
-  name: Joi.string().alphanum().min(3).max(100).required(),
+  name: Joi.string().min(3).max(100).required(),
 
   email: Joi.string().email({ minDomainSegments: 2 }).lowercase(),
 
@@ -63,9 +67,10 @@ const naturalPersonSchema = Joi.object({
     .required()
     .error(() => 'Date must be yyyy-MM-dd'),
 
-  document: Joi.string().custom(validateDocument, 'validates cpf'),
+  document: Joi.string()
+    .custom(validateDocument, 'validates cpf'),
 
-  sex: Joi.string().allow(['masculine', 'feminine']).required(),
+  sex: Joi.string().allow('masculine', 'feminine').required(),
 
   landlinePhoneNumber: Joi.string()
     .trim()

@@ -1,9 +1,13 @@
 import Joi, { CustomHelpers } from '@hapi/joi';
 
 const validateDocument = (cnpj: string, helper: CustomHelpers) => {
-  if (cnpj === '') return helper.error('Invalid CPF');
+  const invalidDocument = 'it is not in the correct format or is invalid.';
 
-  if (cnpj.length !== 14) return helper.error('Invalid CPF');
+  cnpj = cnpj.trim();
+
+  if (cnpj === '') throw new Error(invalidDocument);
+
+  if (cnpj.length !== 14) throw new Error(invalidDocument);
 
   if (
     cnpj === '00000000000000' ||
@@ -17,56 +21,74 @@ const validateDocument = (cnpj: string, helper: CustomHelpers) => {
     cnpj === '88888888888888' ||
     cnpj === '99999999999999'
   ) {
-    return helper.error('Invalid CPF');
+    throw new Error(invalidDocument);
   }
 
-  let tamanho = cnpj.length - 2;
-  let numeros = cnpj.substring(0, tamanho);
-  const digitos = cnpj.substring(tamanho);
-  let soma = 0;
-  let pos = tamanho - 7;
+  let v1 = 0;
+  let v2 = 0;
+  let aux = false;
 
-  for (let i = tamanho; i >= 1; i -= 1) {
-    soma += +numeros.charAt(tamanho - i) * (pos -= 1);
-    if (pos < 2) {
-      pos = 9;
+  for (let i = 1; cnpj.length > i; i += 1) {
+    if (cnpj[i - 1] !== cnpj[i]) {
+      aux = true;
     }
   }
 
-  let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
-
-  if (resultado !== +digitos.charAt(0)) {
-    return helper.error('Invalid CPF');
+  if (!aux) {
+    throw new Error(invalidDocument);
   }
 
-  tamanho += 1;
-  numeros = cnpj.substring(0, tamanho);
-  soma = 0;
-  pos = tamanho - 7;
-  for (let i = tamanho; i >= 1; i -= 1) {
-    soma += +numeros.charAt(tamanho - i) * (pos -= 1);
-    if (pos < 2) {
-      pos = 9;
+  for (let i = 0, p1 = 5, p2 = 13; cnpj.length - 2 > i; i += 1, p1 -= 1, p2 -= 1) {
+    if (p1 >= 2) {
+      v1 += +cnpj[i] * p1;
+    } else {
+      v1 += +cnpj[i] * p2;
     }
   }
 
-  resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+  v1 %= 11;
 
-  if (resultado !== +digitos.charAt(1)) {
-    return helper.error('Invalid CPF');
+  if (v1 < 2) {
+    v1 = 0;
+  } else {
+    v1 = 11 - v1;
+  }
+
+  if (v1 !== +cnpj[12]) {
+    throw new Error(invalidDocument);
+  }
+
+  for (let i = 0, p1 = 6, p2 = 14; cnpj.length - 1 > i; i += 1, p1 -= 1, p2 -= 1) {
+    if (p1 >= 2) {
+      v2 += +cnpj[i] * p1;
+    } else {
+      v2 += +cnpj[i] * p2;
+    }
+  }
+
+  v2 %= 11;
+
+  if (v2 < 2) {
+    v2 = 0;
+  } else {
+    v2 = 11 - v2;
+  }
+
+  if (v2 !== +cnpj[13]) {
+    throw new Error(invalidDocument);
   }
 
   return cnpj;
 };
 
 const legalPersonSchema = Joi.object({
-  kind: Joi.string().allow(['legal', 'private']).required(),
+  kind: Joi.string().allow('legal', 'natural').required(),
 
-  role: Joi.string().allow(['admin', 'default']).required(),
+  role: Joi.string().allow('admin', 'default').required(),
 
-  name: Joi.string().alphanum().min(3).max(100).required(),
+  name: Joi.string().min(3).max(100).required(),
 
-  corporateName: Joi.string().alphanum().min(3).max(100).required(),
+  corporateName: Joi.string().min(3).max(100).required(),
 
   email: Joi.string().email({ minDomainSegments: 2 }).lowercase(),
 
@@ -81,7 +103,7 @@ const legalPersonSchema = Joi.object({
 
   document: Joi.string().custom(validateDocument, 'validates cnpj'),
 
-  sex: Joi.string().allow(['masculine', 'feminine']).required(),
+  sex: Joi.string().allow('masculine', 'feminine').required(),
 
   landlinePhoneNumber: Joi.string()
     .trim()
