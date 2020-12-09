@@ -1,6 +1,6 @@
 import { hash } from 'bcryptjs';
 import PeopleRepository from '@/repositories/PeopleRepository';
-import peopleSchema from '@/helpers/people.schema';
+import naturalPersonSchema from '@/helpers/naturalPerson.schema';
 import AppError from '../errors/AppError';
 
 interface IPersonRequest {
@@ -43,7 +43,7 @@ class CreatePersonService {
     sex,
     birthDate,
   }: IPersonRequest): Promise<IPersonResponse> => {
-    const allFieldsAreValid = await peopleSchema.validateAsync({
+    const allFieldsAreValid = await naturalPersonSchema.validateAsync({
       kind,
       role,
       document,

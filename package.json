@@ -19,7 +19,6 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "http-status-codes": "^2.1.4",
-    "joi-phone-number": "^5.0.0",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.9",
     "reflect-metadata": "^0.1.13",
@@ -32,10 +31,10 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "@types/hapi__joi": "^17.1.6",
     "@types/bcryptjs": "^2.4.2",
     "@types/cors": "^2.8.8",
     "@types/express": "^4.17.8",
+    "@types/hapi__joi": "^17.1.6",
     "@types/jest": "^26.0.15",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/passport": "^1.0.4",
