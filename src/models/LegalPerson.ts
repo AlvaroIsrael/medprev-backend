@@ -1,12 +1,7 @@
-import { IDocument } from './interfaces/IDocument';
 import Person from './Person';
 
-class LegalPerson extends Person implements IDocument {
+class LegalPerson extends Person {
   corporateName: string;
-
-  documentValidate(): boolean {
-    return this.documentName === 'cnpj';
-  }
 }
 
 export default LegalPerson;
