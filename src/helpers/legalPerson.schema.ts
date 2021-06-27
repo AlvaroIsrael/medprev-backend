@@ -1,4 +1,5 @@
 import Joi, { CustomHelpers } from '@hapi/joi';
+import AppError from '../errors/AppError';
 
 const validateDocument = (cnpj: string, helper: CustomHelpers) => {
   const invalidDocument = 'it is not in the correct format or is invalid.';
@@ -81,39 +82,34 @@ const validateDocument = (cnpj: string, helper: CustomHelpers) => {
   return cnpj;
 };
 
-const legalPersonSchema = Joi.object({
-  kind: Joi.string().allow('legal', 'natural').required(),
+const legalPersonSchema = Joi.object()
+  .unknown(false)
+  .keys({
+    kind: Joi.string().allow('legal', 'natural').required(),
 
-  role: Joi.string().allow('admin', 'default').required(),
+    role: Joi.string().allow('admin', 'default').required(),
 
-  name: Joi.string().min(3).max(100).required(),
+    name: Joi.string().min(3).max(100).required(),
 
-  corporateName: Joi.string().min(3).max(100).required(),
+    corporateName: Joi.string().min(3).max(100).required(),
 
-  email: Joi.string().email({ minDomainSegments: 2 }).lowercase(),
+    email: Joi.string().email({ minDomainSegments: 2 }).lowercase(),
 
-  password: Joi.string().min(3).required(),
+    password: Joi.string().min(3).required(),
 
-  avatarUrl: Joi.string().uri(),
+    avatarUrl: Joi.string().uri(),
 
-  birthDate: Joi.string()
-    .pattern(new RegExp('^\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$'))
-    .required()
-    .error(() => 'Date must be yyyy-MM-dd'),
+    document: Joi.string().custom(validateDocument, 'validates cnpj'),
 
-  document: Joi.string().custom(validateDocument, 'validates cnpj'),
+    landlinePhoneNumber: Joi.string()
+      .trim()
+      .regex(/(\(?\d{2}\)?\s)?(\d{4,5}-\d{4})/)
+      .error(new AppError('Landline phone number must be formatted like: (33) 3333-3333 or 3333-3333')),
 
-  sex: Joi.string().allow('masculine', 'feminine').required(),
-
-  landlinePhoneNumber: Joi.string()
-    .trim()
-    .regex(/(\(?\d{2}\)?\s)?(\d{4,5}-\d{4})/)
-    .error(() => 'Landline phone number must be formatted like: (33) 3333-3333 or 3333-3333'),
-
-  mobilePhoneNumber: Joi.string()
-    .trim()
-    .regex(/(\(?\d{2}\)?\s)?(\d{4,5}-\d{4})/)
-    .error(() => 'Mobile phone number must be formatted like: (99) 99999-9999 or 99999-9999'),
-});
+    mobilePhoneNumber: Joi.string()
+      .trim()
+      .regex(/(\(?\d{2}\)?\s)?(\d{4,5}-\d{4})/)
+      .error(new AppError('Mobile phone number must be formatted like: (99) 99999-9999 or 99999-9999')),
+  });
 
 export default legalPersonSchema;

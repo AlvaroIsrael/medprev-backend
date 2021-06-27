@@ -1,5 +1,5 @@
 import Knex, { SchemaBuilder } from 'knex';
-
+// TODO: Criar um indice para impedir inserção de documentos duplicdos.
 export async function up(knex: Knex): Promise<SchemaBuilder> {
   return knex.schema.createTable('people', tableBuilder => {
     tableBuilder.increments('personId').primary();

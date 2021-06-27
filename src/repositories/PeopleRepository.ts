@@ -1,26 +1,12 @@
 import Knex from 'knex';
-import LegalPerson from '../models/LegalPerson';
+import PersonRegistry from '@services/PersonRegistry';
 import Person from '../models/Person';
 import connection from '../database/connection';
+import { IPersonRequest } from '../interfaces/IPersonRequest';
 
 interface IListRequest {
   page: number;
   pageLimit: number;
-}
-
-interface IPersonRequest {
-  kind: string;
-  role: string;
-  document: string;
-  corporateName: string;
-  name: string;
-  email: string;
-  password: string;
-  landlinePhoneNumber: string;
-  mobilePhoneNumber: string;
-  avatarUrl: string;
-  sex: string;
-  birthDate: string;
 }
 
 class PeopleRepository {
@@ -30,21 +16,51 @@ class PeopleRepository {
     this.connection = Knex(connection);
   }
 
-  /* Return a list of all people. */
-  public async all({ page, pageLimit }: IListRequest): Promise<LegalPerson[]> {
+  /* Return a list of people using pagination. */
+  public async all({ page, pageLimit }: IListRequest): Promise<Person[]> {
     const people = await this.connection('people')
       .select(['*'])
       .limit(5)
       .offset((page - 1) * pageLimit);
 
-    return Array(new LegalPerson());
-  }
+    const foundPeople: Person[] = [];
+    let person: Person;
 
-  /* Find a person  by it's document. */
-  public async findOne(document: string): Promise<Person | null> {
-    const personFound = new LegalPerson();
+    people.forEach(personInDataBase => {
+      const {
+        kind,
+        role,
+        document,
+        corporateName,
+        name,
+        email,
+        password,
+        landlinePhoneNumber,
+        mobilePhoneNumber,
+        avatarUrl,
+        sex,
+        birthDate,
+      } = personInDataBase;
 
-    return personFound || null;
+      person = new PersonRegistry().getPerson({
+        kind,
+        role,
+        document,
+        corporateName,
+        name,
+        email,
+        password,
+        landlinePhoneNumber,
+        mobilePhoneNumber,
+        avatarUrl,
+        sex,
+        birthDate,
+      });
+
+      foundPeople.push(person);
+    });
+
+    return foundPeople;
   }
 
   /* Find a person  by it's document. */

@@ -1,27 +1,13 @@
 import { hash } from 'bcryptjs';
+import Person from '../models/Person';
 import PeopleRepository from '../repositories/PeopleRepository';
-import naturalPersonSchema from '../helpers/naturalPerson.schema';
+import PersonRegistry from './PersonRegistry';
 import AppError from '../errors/AppError';
-import legalPersonSchema from '../helpers/legalPerson.schema';
+import { IPersonRequest } from '../interfaces/IPersonRequest';
 
-interface IPersonRequest {
-  kind: string;
-  role: string;
-  document: string;
-  corporateName: string;
-  name: string;
-  email: string;
-  password: string;
-  landlinePhoneNumber: string;
-  mobilePhoneNumber: string;
-  avatarUrl: string;
-  sex: string;
-  birthDate: string;
-}
-
-interface IPersonResponse {
-  personId: string;
-}
+type IPersonResponse = {
+  personId: number;
+};
 
 class CreatePersonService {
   private peopleRepository: PeopleRepository;
@@ -44,9 +30,10 @@ class CreatePersonService {
     sex,
     birthDate,
   }: IPersonRequest): Promise<IPersonResponse> => {
-    let allFieldsAreValid;
-    if (kind === 'legal') {
-      allFieldsAreValid = await legalPersonSchema.validateAsync({
+    let person: Person;
+
+    try {
+      person = new PersonRegistry().getPerson({
         kind,
         role,
         document,
@@ -60,33 +47,24 @@ class CreatePersonService {
         sex,
         birthDate,
       });
-    } else {
-      allFieldsAreValid = await naturalPersonSchema.validateAsync({
-        kind,
-        role,
-        document,
-        name,
-        email,
-        password,
-        landlinePhoneNumber,
-        mobilePhoneNumber,
-        avatarUrl,
-        sex,
-        birthDate,
-      });
+    } catch (e) {
+      throw new AppError(e.message);
     }
 
-    if (!allFieldsAreValid) {
-      throw new AppError(allFieldsAreValid);
+    const { isValidPerson, error } = person.isValid();
+
+    if (!isValidPerson) {
+      throw new AppError(error);
     }
 
-    const documentExists = await this.peopleRepository.findByDocument(document);
+    const personExists = await this.peopleRepository.findByDocument(document);
 
-    if (documentExists) {
-      throw new AppError('Document already registered.');
+    if (personExists) {
+      throw new AppError('Person already registered.');
     }
 
-    const hashedPassword = await hash(password, 8);
+    const hashSalt = 8;
+    const hashedPassword = await hash(password, hashSalt);
 
     const personId = await this.peopleRepository.create({
       kind,
@@ -103,7 +81,7 @@ class CreatePersonService {
       birthDate,
     });
 
-    return { personId: personId.toString() };
+    return { personId };
   };
 }
 

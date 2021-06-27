@@ -1,16 +1,18 @@
 {
   "compilerOptions": {
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "target": "es6",
     "module": "commonjs",
     "outDir": "./bin",
+    "rootDir": "./src",
     "strict": true,
     "strictPropertyInitialization": false,
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@services/*": [
+        "services/*"
+      ],
     },
     "esModuleInterop": true,
     "experimentalDecorators": true,

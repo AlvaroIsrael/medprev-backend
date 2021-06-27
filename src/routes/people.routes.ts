@@ -30,7 +30,7 @@ peopleRouter.post('/', async (request, response) => {
     const user = await createPersonService.execute({
       kind,
       role,
-      document: document.match(/[0-9]+/g).join(''),
+      document,
       corporateName,
       name,
       email,
@@ -42,11 +42,30 @@ peopleRouter.post('/', async (request, response) => {
       birthDate,
     });
 
-    return response.status(StatusCodes.OK).json(user);
+    return response.status(StatusCodes.OK).json({ user });
   } catch (e) {
     return response.status(StatusCodes.BAD_REQUEST).json({ erro: e.message });
   }
 });
+
+/* Gets a person. */
+/* peopleRouter.get('/:id', ensureAuthenticated, async (request, response) => {
+ const { id } = request.params;
+ const { name, password } = request.body;
+
+ const updateUserService = new ListPersonService();
+
+ try {
+ const people = await listPersonService.execute({ page, pageLimit });
+
+ return response.status(StatusCodes.OK).json({ people });
+ } catch (e) {
+ if (e.message === 'Only admin can update roles.') {
+ return response.status(StatusCodes.UNAUTHORIZED).json({ erro: e.message });
+ }
+ return response.status(StatusCodes.NOT_FOUND).json({ erro: e.message });
+ }
+ }); */
 
 /* Updates a person. */
 /* peopleRouter.put('/:id', ensureAuthenticated, async (request, response) => {
