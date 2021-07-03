@@ -1,5 +1,6 @@
 import { IPerson } from '../interfaces/IPerson';
 import { IPersonRequest } from '../interfaces/IPersonRequest';
+import Address from './Address';
 
 abstract class Person implements IPerson {
   personId: string;
@@ -27,6 +28,8 @@ abstract class Person implements IPerson {
   createdAt: Date;
 
   updatedAt: Date;
+
+  addresses: Address[];
 
   abstract isValid(): { isValidPerson: boolean; error: string };
 

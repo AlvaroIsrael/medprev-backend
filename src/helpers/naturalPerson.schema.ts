@@ -1,7 +1,7 @@
-import Joi, { CustomHelpers } from '@hapi/joi';
+import Joi from '@hapi/joi';
 import AppError from '../errors/AppError';
 
-const validateDocument = (cpf: string, helper: CustomHelpers) => {
+const validateDocument = (cpf: string) => {
   const invalidDocument = 'it is not in the correct format or is invalid.';
 
   cpf = cpf.trim();

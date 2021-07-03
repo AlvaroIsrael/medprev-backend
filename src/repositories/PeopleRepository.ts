@@ -63,6 +63,17 @@ class PeopleRepository {
     return foundPeople;
   }
 
+  /* Find a person  by it's id. */
+  public async findById(personId: string): Promise<string | null> {
+    const personFound = await this.connection('people').select('personId').from('people').where({ personId });
+
+    if (personFound[0] === undefined) {
+      return null;
+    }
+
+    return personFound[0];
+  }
+
   /* Find a person  by it's document. */
   public async findByDocument(document: string): Promise<string | null> {
     const personFound = await this.connection('people')
