@@ -1,10 +1,13 @@
 {
-  "name": "medprev-backend",
-  "version": "1.0.0",
+  "name": "@AlvaroIsrael/medprev-backend",
+  "version": "1.0.1",
   "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/AlvaroIsrael/medprev-backend.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "author": "Alvaro Israel Nunes Leite <israel.nunes.leite@gmail.com>",
   "license": "AGPL-3.0-or-later",
@@ -14,8 +17,7 @@
     "dev:server": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules src/server.ts",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand --coverage --watchAll=false --config ./src/config/jest.config.ts",
     "knex:seed": "npx knex seed:run --knexfile src/config/knexfile.ts",
-    "knex:migrate": "npx knex migrate:latest --knexfile src/config/knexfile.ts",
-    "publish": "npm publish --registry https://npm.pkg.github.com/"
+    "knex:migrate": "npx knex migrate:latest --knexfile src/config/knexfile.ts"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
