@@ -56,11 +56,11 @@ Code coverage html report can be found at:
 
 ### 🤝 Contributing
 
-Fork it (https://github.com/AlvaroIsrael/medprev-backend/fork)
-Create your feature branch (`git checkout -b feature/myAewsomeFeature`)
-Commit your changes (`git commit -am 'Add some new myAewsomeFeature'`)
-Push to the branch (`git push origin feature/myAewsomeFeature`)
-Create a new Pull Request
+- Fork it (https://github.com/AlvaroIsrael/medprev-backend/fork)
+- Create your feature branch (`git checkout -b feature/myAewsomeFeature`)
+- Commit your changes (`git commit -am 'Add some new myAewsomeFeature'`)
+- Push to the branch (`git push origin feature/myAewsomeFeature`)
+- Create a new Pull Request
 
 ### 🏆 Technologies Used
 
