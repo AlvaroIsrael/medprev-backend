@@ -1,8 +1,14 @@
 {
-  "name": "medprev-backend",
-  "version": "1.0.0",
+  "name": "@AlvaroIsrael/medprev-backend",
+  "version": "1.1.1",
   "main": "index.js",
-  "repository": "https://github.com/AlvaroIsrael/medprev-backend.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlvaroIsrael/medprev-backend.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "author": "Alvaro Israel Nunes Leite <israel.nunes.leite@gmail.com>",
   "license": "AGPL-3.0-or-later",
   "scripts": {
