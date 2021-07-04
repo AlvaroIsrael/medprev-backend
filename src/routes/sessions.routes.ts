@@ -10,17 +10,13 @@ const sessionsRouter = Router();
 
 /* Creates a new session. */
 sessionsRouter.post('/', async (request, response) => {
-  try {
-    const { document, email, password } = request.body;
+  const { document, email, password } = request.body;
 
-    const { user, token } = await authenticateUser.execute({ document, email, password });
+  const { user, token } = await authenticateUser.execute({ document, email, password });
 
-    delete user.password;
+  delete user.password;
 
-    return response.status(StatusCodes.OK).json({ user, token });
-  } catch (e) {
-    return response.status(StatusCodes.BAD_REQUEST).json({ erro: e.message });
-  }
+  return response.status(StatusCodes.OK).json({ user, token });
 });
 
 export default sessionsRouter;
