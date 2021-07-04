@@ -9,6 +9,35 @@ class AddressesRepository {
     this.connection = Knex(connection);
   }
 
+  /* Find if address exists for a person. */
+  public async exists({
+    personId,
+    street,
+    number,
+    complement,
+    district,
+    city,
+    state,
+    zipCode,
+  }: IAddressRequest): Promise<boolean> {
+    const addressExists = await this.connection('addresses')
+      .select('addressId')
+      .from('addresses')
+      .where({
+        personId,
+        street,
+        number,
+        complement,
+        district,
+        city,
+        state,
+        zipCode,
+      })
+      .limit(1);
+
+    return addressExists[0] !== undefined;
+  }
+
   /* Creates a new address. */
   public async create({
     personId,

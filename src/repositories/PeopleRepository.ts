@@ -1,5 +1,5 @@
 import Knex from 'knex';
-import PersonRegistry from '@services/PersonRegistry';
+import PersonRegistry from '../services/PersonRegistry';
 import Person from '../models/Person';
 import connection from '../database/connection';
 import { IPersonRequest } from '../interfaces/IPersonRequest';
@@ -74,7 +74,47 @@ class PeopleRepository {
     return personFound[0];
   }
 
-  /* Find a person  by it's document. */
+  /* Find a person by its document. */
+  public async findOne(document: string): Promise<Person | null> {
+    const people = await this.connection('people').select(['*']).from('people').where({ document }).limit(1);
+
+    let person: Person | null = null;
+
+    people.forEach(personInDataBase => {
+      const {
+        kind,
+        role,
+        corporateName,
+        name,
+        email,
+        password,
+        landlinePhoneNumber,
+        mobilePhoneNumber,
+        avatarUrl,
+        sex,
+        birthDate,
+      } = personInDataBase;
+
+      person = new PersonRegistry().getPerson({
+        kind,
+        role,
+        document,
+        corporateName,
+        name,
+        email,
+        password,
+        landlinePhoneNumber,
+        mobilePhoneNumber,
+        avatarUrl,
+        sex,
+        birthDate,
+      });
+    });
+
+    return person;
+  }
+
+  /* Find a person id and password by its document. */
   public async findByDocument(document: string): Promise<string | null> {
     const personFound = await this.connection('people')
       .select('personId', 'password')

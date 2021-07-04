@@ -1,9 +1,13 @@
+import path from 'path';
+
 export default {
   clearMocks: true,
   collectCoverage: true,
   coverageProvider: 'v8',
   maxWorkers: '80%',
-  collectCoverageFrom: ['<rootDir>/src/services/*.ts', '<rootDir>/src/models/*.ts', '!<rootDir>/node_modules/'],
+  rootDir: path.join(__dirname, '../..'),
+  testMatch: [path.join(__dirname, '../../**/?(*.)+(spec).[t]s?(x)')],
+  collectCoverageFrom: ['<rootDir>/src/(services|models)/*.ts', '!<rootDir>/node_modules/'],
   coverageDirectory: 'coverage',
   coverageReporters: ['text-summary', 'lcov'],
   coverageThreshold: {
@@ -16,5 +20,4 @@ export default {
   },
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testMatch: ['**/*.spec.ts'],
 };
