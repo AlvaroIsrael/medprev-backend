@@ -1,89 +1,362 @@
-swagger: '2.0'
+openapi: 3.0.0
 info:
   version: 1.1.1
   title: People Api
   description: People API
-  termsOfService: 'https://github.com/AlvaroIsrael/medprev-backend/blob/master/README.md'
+  termsOfService: 'https://github.com/AlvaroIsrael/medprev-backend/blob/main/README.md'
   contact:
     email: israel.nunes.leite@gmail.com
   license:
     name: AGPL-3.0-or-later
-    url: 'https://github.com/AlvaroIsrael/medprev-backend/blob/master/LICENCE.md'
+    url: 'https://github.com/AlvaroIsrael/medprev-backend/blob/main/LICENSE.md'
 
-securityDefinitions:
-  JWT:
-    description: ''
-    type: apiKey
-    name: Authorization
-    in: header
-
-host: 'localhost:3333'
-
-basePath: /api/v1
+servers:
+  - url: http://localhost:3333/v1
+    description: Development server
 
 tags:
   - name: People
     description: Operations about people.
-    externalDocs:
-      description: Find out more
-      url: 'http://swagger.io'
   - name: Addresses
-    description: Operations about addresses
-    externalDocs:
-      description: Find out more about our addresses.
-      url: 'http://swagger.io'
+    description: Operations about addresses.
 
-schemes:
-  - http
-
-definitions:
-  Person:
-    required:
-      - kind
-      - name
-      - email
-      - password
-      - landlinePhoneNumber
-      - mobilePhoneNumber
-      - avatarUrl
-    properties:
-      kind:
-        type: string
-        example: 'legal'
-      name:
-        type: string
-        example: 'Moltendrifter Guardian'
-      email:
-        type: string
-        example: 'moltendrifter@gmail.com'
-      password:
-        type: string
-        example: 'mysupersecurepassword'
-      landlinePhoneNumber:
-        type: string
-        example: '55 31 3333-9999'
-      mobilePhoneNumber:
-        type: string
-        example: '55 31 99999-9999'
-      avatarUrl:
-        type: string
-        example: 'https://url.moltendrifter.io/'
+components:
+  securitySchemes:
+    JWT:
+      description: 'JWT Bearer'
+      type: apiKey
+      name: Authorization
+      in: header
+  schemas:
+    Appointments:
+      required:
+        - provider_id
+        - date
+      properties:
+        provider_id:
+          type: string
+        date:
+          type: string
+      example:
+        provider_id: '4129c527-67c1-4fc4-a091-526011d74a48'
+        date: '2021-03-09 09:00:00'
+    Users:
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        name: 'MedPrev User'
+        example: 'docs@medprev.net'
+        password: 'pass123456'
+    Sessions:
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        email: 'docs@medprev.net'
+        password: 'pass123456'
+    InternalServerError:
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+      example:
+        status: 'error'
+        message: 'Internal server error.'
+    UnauthorizedError:
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+      example:
+        status: 'error'
+        message: 'Missing JWT token.'
+    PersonIdValidationError:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      example:
+        error: 'error'
+        message: '"personId" is not allowed to be empty'
+    StreetValidationError:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      example:
+        error: 'error'
+        message: '"street" is not allowed to be empty'
+    ValidationError:
+      properties:
+        statusCode:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        validation:
+          type: object
+          properties:
+            body:
+              type: object
+              properties:
+                source:
+                  type: string
+                keys:
+                  type: array
+                message:
+                  type: string
+      example:
+        statusCode: 400
+        error: 'Bad Request'
+        message: 'celebrate request validation failed'
+        validation: {
+          body: {
+            source: 'body',
+            keys: [ 'validated field' ],
+            message: 'validated field is required',
+          }
+        }
+    Person:
+      required:
+        - kind
+        - name
+        - email
+        - password
+        - landlinePhoneNumber
+        - mobilePhoneNumber
+        - avatarUrl
+      properties:
+        kind:
+          type: string
+          example: 'legal'
+        name:
+          type: string
+          example: 'Moltendrifter Guardian'
+        email:
+          type: string
+          example: 'moltendrifter@gmail.com'
+        password:
+          type: string
+          example: 'mysupersecurepassword'
+        landlinePhoneNumber:
+          type: string
+          example: '55 31 3333-9999'
+        mobilePhoneNumber:
+          type: string
+          example: '55 31 99999-9999'
+        avatarUrl:
+          type: string
+          example: 'https://url.moltendrifter.io/'
+    Address:
+      required:
+        - personId
+        - street
+        - number
+        - complement
+        - district
+        - city
+        - state
+        - zipCode
+      properties:
+        personId:
+          type: string
+          example: '1'
+        street:
+          type: string
+          example: 'Moltendrifter Guardian Street'
+        number:
+          type: number
+          example: 100
+        complement:
+          type: string
+          example: 'Lorem Ispum'
+        district:
+          type: string
+          example: 'Some Street Name'
+        city:
+          type: string
+          example: 'Smallville'
+        state:
+          type: string
+          example: 'Some State Name'
+        zipCode:
+          type: string
+          example: '99999-999'
 
 paths:
-  /api/v1/people:
+  /v1/docs:
+    get:
+      tags:
+        - Docs
+      summary: Exhibits a web page with all api documented by swagger.
+      description: 'Exhibits a web page with all api documented by swagger.'
+      responses:
+        '500':
+          description: When something goes 'boing' in the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+        '200':
+          description: When all parameters are ok.
+          content:
+            text/html:
+              example:
+                text/html:
+                  value: '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Swagger UI</title><link rel="stylesheet" type="text/css" href="./swagger-ui.css" ><link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32" /><link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" /></head><body><div id="swagger-ui"></div><script src="./swagger-ui-bundle.js"></script><script src="./swagger-ui-standalone-preset.js"></script><script src="./swagger-ui-init.js"></script></body></html>'
+      security: [ ]
+
+  /v1/people:
     post:
       tags:
         - People
       summary: Add a new person to the database.
       description: "Only people with 'admin' role, can add perform this action."
-      parameters:
-        - in: body
-          name: body
-          description: New person
-          required: false
-          schema:
-            $ref: '#/definitions/Person'
+      requestBody:
+        description: New person
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                kind:
+                  type: string
+                role:
+                  type: string
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                landlinePhoneNumber:
+                  type: string
+                mobilePhoneNumber:
+                  type: string
+                avatarUrl:
+                  type: string
+                sex:
+                  type: string
+                birthDate:
+                  type: string
+                addresses:
+                  type: array
+            example: {
+              kind: 'natural',
+              role: 'admin',
+              document: '152.053.110-96',
+              name: 'manolo',
+              email: 'manolo@gmail.com',
+              password: 'mysupersecurepassword',
+              landlinePhoneNumber: '55 31 3333-9999',
+              mobilePhoneNumber: '55 31 99999-9999',
+              avatarUrl: 'https://mysuper-url',
+              sex: 'm',
+              birthDate: '2020-12-05',
+              addresses: [ ]
+            }
       responses:
-        '200':
-          description: sucesso
+        '500':
+          description: When something goes boing in the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+        '400':
+          description: When validation error occurs.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationError'
+              examples:
+                ValidationError:
+                  value:
+                    status: 'error'
+                    message: 'User token does not exist'
       security: [ ]
+
+  /v1/addresses:
+    post:
+      tags:
+        - Addresses
+      summary: Add a new address to the database.
+      description: "Only people with 'admin' role, can add perform this action."
+      requestBody:
+        description: New address
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                personId:
+                  type: string
+                street:
+                  type: string
+                number:
+                  type: number
+                complement:
+                  type: string
+                district:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                zipCode:
+                  type: string
+            example: {
+              personId: '1',
+              street: 'Some street name',
+              number: 999,
+              complement: 'Apto 1',
+              district: 'Some district name',
+              city: 'Some city name',
+              state: 'Some state name',
+              zipCode: '99999-999',
+            }
+      responses:
+        '500':
+          description: When something goes boing in the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+        '400':
+          description: When validation error occurs.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/PersonIdValidationError'
+                  - $ref: '#/components/schemas/StreetValidationError'
+              examples:
+                PersonIdValidationError:
+                  value:
+                    status: 'error'
+                    message: '"personId" is not allowed to be empty'
+                StreetValidationError:
+                  value:
+                    status: 'error'
+                    message: '"street" is not allowed to be empty'

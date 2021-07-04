@@ -15,22 +15,18 @@ const addressesRouter = Router();
 addressesRouter.post('/', async (request, response) => {
   const { personId, street, number, complement, district, city, state, zipCode } = request.body;
 
-  try {
-    const address = await createAddressService.execute({
-      personId,
-      street,
-      number,
-      complement,
-      district,
-      city,
-      state,
-      zipCode,
-    });
+  const address = await createAddressService.execute({
+    personId,
+    street,
+    number,
+    complement,
+    district,
+    city,
+    state,
+    zipCode,
+  });
 
-    return response.status(StatusCodes.OK).json({ address });
-  } catch (e) {
-    return response.status(StatusCodes.BAD_REQUEST).json({ erro: e.message });
-  }
+  return response.status(StatusCodes.OK).json({ ...address });
 });
 
 export default addressesRouter;

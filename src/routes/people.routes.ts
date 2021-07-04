@@ -26,26 +26,22 @@ peopleRouter.post('/', async (request, response) => {
     birthDate,
   } = request.body;
 
-  try {
-    const user = await createPersonService.execute({
-      kind,
-      role,
-      document,
-      corporateName,
-      name,
-      email,
-      password,
-      landlinePhoneNumber,
-      mobilePhoneNumber,
-      avatarUrl,
-      sex,
-      birthDate,
-    });
+  const user = await createPersonService.execute({
+    kind,
+    role,
+    document,
+    corporateName,
+    name,
+    email,
+    password,
+    landlinePhoneNumber,
+    mobilePhoneNumber,
+    avatarUrl,
+    sex,
+    birthDate,
+  });
 
-    return response.status(StatusCodes.OK).json({ user });
-  } catch (e) {
-    return response.status(StatusCodes.BAD_REQUEST).json({ erro: e.message });
-  }
+  return response.status(StatusCodes.OK).json({ ...user });
 });
 
 /* Gets a person. */
