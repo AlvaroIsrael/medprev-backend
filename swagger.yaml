@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 0.1.0
+  version: 1.1.1
   title: People Api
   description: People API
   termsOfService: 'https://github.com/AlvaroIsrael/medprev-backend/blob/master/README.md'

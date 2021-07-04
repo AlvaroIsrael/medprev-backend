@@ -18,25 +18,6 @@ class CreateAddressService {
     this.peopleRepository = peopleRepository;
   }
 
-  /**
-   * Checks if all parameters are present. If they are not undefined or null.
-   * @param { personId, street, number, complement, district, city, state, zipCode }: IAddressRequest - Um objeto do
-   * tipo IAddressRequest.
-   * @returns boolean - False if one or more arguments are missing, otherwise return True.
-   */
-  private missingArguments = ({
-    personId,
-    street,
-    number,
-    complement,
-    district,
-    city,
-    state,
-    zipCode,
-  }: IAddressRequest) => {
-    return personId && street && number && complement && district && city && state && zipCode;
-  };
-
   public execute = async ({
     personId,
     street,
@@ -47,10 +28,6 @@ class CreateAddressService {
     state,
     zipCode,
   }: IAddressRequest): Promise<IAddressResponse> => {
-    if (this.missingArguments({ personId, street, number, complement, district, city, state, zipCode })) {
-      throw new AppError('Invalid request.');
-    }
-
     const address = new Address({
       personId,
       street,
@@ -71,7 +48,22 @@ class CreateAddressService {
     const personExists = await this.peopleRepository.findById(personId);
 
     if (!personExists) {
-      throw new AppError('This person does not exist.');
+      throw new AppError('This person does not exist');
+    }
+
+    const addressExists = await this.addressesRepository.exists({
+      personId,
+      street,
+      number,
+      complement,
+      district,
+      city,
+      state,
+      zipCode,
+    });
+
+    if (addressExists) {
+      throw new AppError('This address already exists for this person');
     }
 
     const addressId = await this.addressesRepository.create({

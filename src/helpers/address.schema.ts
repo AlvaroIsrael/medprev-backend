@@ -12,14 +12,14 @@ const addressSchema = Joi.object().keys({
 
   district: Joi.string().min(1).max(150).required(),
 
-  city: Joi.string().min(1).max(150).required(),
+  city: Joi.string().min(1).max(50).required(),
 
   state: Joi.string().min(1).max(50).required(),
 
   zipCode: Joi.string()
     .trim()
     .regex(/[0-9]{5}-[0-9]{3}/)
-    .error(new AppError('Zip code must be formatted like: 99999-999')),
+    .error(new AppError('"zipCode" must be formatted like 99999-999')),
 });
 
 export default addressSchema;

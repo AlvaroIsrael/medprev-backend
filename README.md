@@ -39,7 +39,8 @@ $ yarn install
 $ yarn start
 ```
 
-This application uses [SQLite](https://www.sqlite.org/index.html) as database.
+This application uses [SQLite](https://www.sqlite.org/index.html) as database. The `database.sqlite` can be found
+under `src/database/database.sqlite`.
 
 ### 🎯 How to Test
 
@@ -56,11 +57,11 @@ Code coverage html report can be found at:
 
 ### 🤝 Contributing
 
-Fork it (https://github.com/AlvaroIsrael/medprev-backend/fork)
-Create your feature branch (`git checkout -b feature/myAewsomeFeature`)
-Commit your changes (`git commit -am 'Add some new myAewsomeFeature'`)
-Push to the branch (`git push origin feature/myAewsomeFeature`)
-Create a new Pull Request
+- Fork it (https://github.com/AlvaroIsrael/medprev-backend/fork).
+- Create your feature branch (`bash git checkout -b feature/myAewsomeFeature`).
+- Commit your changes (`git commit -m 'Add some new myAewsomeFeature'`).
+- Push to the branch (`git push origin feature/myAewsomeFeature`).
+- Create a new pull request.
 
 ### 🏆 Technologies Used
 

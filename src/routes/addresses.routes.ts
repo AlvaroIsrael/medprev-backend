@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 // import ensureAuthenticated from '../middleares/ensureAuthenticated';
-import CreateAddressService from '@services/CreateAddressService';
+import CreateAddressService from '../services/CreateAddressService';
 import PeopleRepository from '../repositories/PeopleRepository';
 import AddressesRepository from '../repositories/AddressesRepository';
 
