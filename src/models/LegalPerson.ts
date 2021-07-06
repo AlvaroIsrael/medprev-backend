@@ -9,7 +9,7 @@ class LegalPerson extends Person {
     const validation = legalPersonSchema.validate({
       kind: this.kind,
       role: this.role,
-      document: this.documentNumber,
+      document: this.document,
       corporateName: this.corporateName,
       name: this.name,
       email: this.email,
@@ -24,6 +24,7 @@ class LegalPerson extends Person {
   create({
     kind,
     role,
+    document,
     corporateName,
     name,
     email,
@@ -34,6 +35,8 @@ class LegalPerson extends Person {
   }: IPersonRequest): void {
     this.kind = kind;
     this.role = role;
+    this.document = document;
+    this.documentName = 'cnpj';
     this.corporateName = corporateName;
     this.name = name;
     this.email = email;

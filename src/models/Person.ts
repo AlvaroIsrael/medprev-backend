@@ -9,7 +9,7 @@ abstract class Person implements IPerson {
 
   role: 'admin' | 'default';
 
-  documentNumber: string;
+  document: string;
 
   documentName: 'cpf' | 'cnpj';
 

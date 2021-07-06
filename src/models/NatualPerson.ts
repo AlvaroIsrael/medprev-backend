@@ -11,7 +11,7 @@ class NatualPerson extends Person {
     const validation = naturalPersonSchema.validate({
       kind: this.kind,
       role: this.role,
-      document: this.documentNumber,
+      document: this.document,
       name: this.name,
       email: this.email,
       password: this.password,
@@ -27,6 +27,7 @@ class NatualPerson extends Person {
   create({
     kind,
     role,
+    document,
     name,
     email,
     password,
@@ -38,6 +39,8 @@ class NatualPerson extends Person {
   }: IPersonRequest): void {
     this.kind = kind;
     this.role = role;
+    this.document = document;
+    this.documentName = 'cpf';
     this.name = name;
     this.email = email;
     this.password = password;

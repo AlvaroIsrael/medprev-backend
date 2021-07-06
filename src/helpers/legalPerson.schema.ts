@@ -2,7 +2,7 @@ import Joi from '@hapi/joi';
 import AppError from '../errors/AppError';
 
 const validateDocument = (cnpj: string) => {
-  const invalidDocument = 'it is not in the correct format or is invalid.';
+  const invalidDocument = 'it is not in the correct format or is invalid';
 
   cnpj = cnpj.trim();
 
@@ -83,9 +83,9 @@ const validateDocument = (cnpj: string) => {
 };
 
 const legalPersonSchema = Joi.object().keys({
-  kind: Joi.string().allow('legal', 'natural').required(),
+  kind: Joi.string().valid('legal', 'natural').required(),
 
-  role: Joi.string().allow('admin', 'default').required(),
+  role: Joi.string().valid('admin', 'default').required(),
 
   name: Joi.string().min(3).max(100).required(),
 
