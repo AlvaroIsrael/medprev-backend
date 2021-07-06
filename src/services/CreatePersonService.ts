@@ -12,8 +12,11 @@ type IPersonResponse = {
 class CreatePersonService {
   private peopleRepository: PeopleRepository;
 
-  constructor(peopleRepository: PeopleRepository) {
+  private personRegistry: PersonRegistry;
+
+  constructor(peopleRepository: PeopleRepository, personRegistry: PersonRegistry) {
     this.peopleRepository = peopleRepository;
+    this.personRegistry = personRegistry;
   }
 
   public execute = async ({
@@ -33,7 +36,7 @@ class CreatePersonService {
     let person: Person;
 
     try {
-      person = new PersonRegistry().getPerson({
+      person = this.personRegistry.getPerson({
         kind,
         role,
         document,

@@ -12,6 +12,14 @@ class PersonRegistry {
     this.people.set('natural', new NatualPerson());
   }
 
+  private instanciatePerson = (kind: string): Person => {
+    const person = this.people.get(kind);
+    if (person === undefined) {
+      throw new AppError('Invalid person kind');
+    }
+    return person;
+  };
+
   public getPerson = ({
     kind,
     role,
@@ -26,11 +34,7 @@ class PersonRegistry {
     sex,
     birthDate,
   }: IPersonRequest): Person => {
-    const person = this.people.get(kind);
-
-    if (person === undefined) {
-      throw new AppError('Invalid person kind.');
-    }
+    const person = this.instanciatePerson(kind);
 
     person.create({
       kind,
