@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import PersonRegistry from '@services/PersonRegistry';
 import CreatePersonService from '../services/CreatePersonService';
 // import ensureAuthenticated from '../middleares/ensureAuthenticated';
 import PeopleRepository from '../repositories/PeopleRepository';
 
 const peopleRepository = new PeopleRepository();
-const createPersonService = new CreatePersonService(peopleRepository);
+const personRegistry = new PersonRegistry();
+const createPersonService = new CreatePersonService(peopleRepository, personRegistry);
 
 const peopleRouter = Router();
 
