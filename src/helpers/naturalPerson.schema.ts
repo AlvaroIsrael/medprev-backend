@@ -8,6 +8,12 @@ const validateDocument = (cpf: string) => {
 
   if (cpf === '') throw new Error(invalidDocument);
 
+  if (cpf.length !== 14) throw new Error(invalidDocument);
+
+  const numericPatter = cpf.match(/\d/g);
+
+  cpf = numericPatter === null ? '' : numericPatter.join('');
+
   if (cpf.length !== 11) throw new Error(invalidDocument);
 
   if (
@@ -61,7 +67,7 @@ const naturalPersonSchema = Joi.object().keys({
 
   name: Joi.string().min(3).max(100).required(),
 
-  email: Joi.string().email({ minDomainSegments: 2 }).lowercase(),
+  email: Joi.string().email({ minDomainSegments: 2 }).lowercase().required(),
 
   password: Joi.string().min(3).required(),
 
@@ -77,14 +83,14 @@ const naturalPersonSchema = Joi.object().keys({
   sex: Joi.string().valid('masculine', 'feminine').required(),
 
   landlinePhoneNumber: Joi.string()
-    .trim()
-    .regex(/(\(?\d{2}\)?\s)?(\d{4,5}-\d{4})/)
-    .error(new AppError('Landline phone number must be formatted like: (33) 3333-3333 or 3333-3333')),
+    .allow(null, '')
+    .regex(/^(\(?\d{2}\)?\s)?(\(?\d{2}\)?\s)?(\d{4}-\d{4})$/)
+    .error(new AppError('"landlinePhoneNumber" must be formatted like (33) 3333-3333 or 3333-3333')),
 
   mobilePhoneNumber: Joi.string()
-    .trim()
-    .regex(/(\(?\d{2}\)?\s)?(\d{4,5}-\d{4})/)
-    .error(new AppError('Mobile phone number must be formatted like: (99) 99999-9999 or 99999-9999')),
+    .allow(null, '')
+    .regex(/^(\(?\d{2}\)?\s)?(\(?\d{2}\)?\s)?(\d{4,5}-\d{4})$/)
+    .error(new AppError('"mobilePhoneNumber" must be formatted like (99) 99999-9999 or 99999-9999')),
 });
 
 export default naturalPersonSchema;

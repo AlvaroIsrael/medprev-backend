@@ -4,6 +4,7 @@ import AppError from '../errors/AppError';
 import PeopleRepository from '../repositories/PeopleRepository';
 import { IPersonRequest } from '../interfaces/IPersonRequest';
 import PersonRegistry from '../services/PersonRegistry';
+import LegalPerson from '../models/LegalPerson';
 
 type IPersonTestRequest = {
   kind?: string;
@@ -90,6 +91,37 @@ describe('CreatePersonService', () => {
       expect(e).toBeInstanceOf(AppError);
       expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
       expect(e.message).toEqual('Invalid person kind');
+    }
+  });
+
+  it('should return error 400 if a person already exists in the database.', async () => {
+    const legalPersonCreated: LegalPerson = new LegalPerson();
+    legalPersonCreated.create(legalPerson);
+
+    const getPersonSpy = jest
+      .spyOn(personRegistry, 'getPerson')
+      .mockImplementation(() => personRegistry.getPerson(legalPerson))
+      .mockReturnValue(legalPersonCreated);
+
+    const findByDocumentSpy = jest
+      .spyOn(peopleRepository, 'findByDocument')
+      .mockImplementation(() => peopleRepository.findByDocument(legalPersonCreated.document))
+      .mockReturnValue(
+        Promise.resolve({
+          personId: 1,
+          password: 'passwordhashverysecure!',
+        }),
+      );
+
+    try {
+      await createPersonService.execute(legalPerson);
+    } catch (e) {
+      expect(getPersonSpy).toHaveBeenCalledTimes(1);
+      expect(findByDocumentSpy).toHaveBeenCalledTimes(1);
+      expect(findByDocumentSpy).toHaveBeenCalledWith(legalPersonCreated.document);
+      expect(e).toBeInstanceOf(AppError);
+      expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(e.message).toEqual('Person already registered');
     }
   });
 
@@ -210,6 +242,135 @@ describe('CreatePersonService', () => {
         expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
         expect(e.message).toEqual('"corporateName" length must be less than or equal to 100 characters long');
       }
+    });
+
+    it('should return error 400 if [email] parameter is empty.', async () => {
+      genericLegalPerson = { ...genericLegalPerson, email: '' };
+
+      try {
+        await createPersonService.execute(genericLegalPerson);
+      } catch (e) {
+        expect(e).toBeInstanceOf(AppError);
+        expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+        expect(e.message).toEqual('"email" is not allowed to be empty');
+      }
+    });
+
+    it('should return error 400 if [email] parameter has invalid domain.', async () => {
+      genericLegalPerson = { ...genericLegalPerson, email: 'corporate@gmail' };
+
+      try {
+        await createPersonService.execute(genericLegalPerson);
+      } catch (e) {
+        expect(e).toBeInstanceOf(AppError);
+        expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+        expect(e.message).toEqual('"email" must be a valid email');
+      }
+    });
+
+    it('should return error 400 if [email] parameter is not an email.', async () => {
+      genericLegalPerson = { ...genericLegalPerson, email: 'dude this is not an email!' };
+
+      try {
+        await createPersonService.execute(genericLegalPerson);
+      } catch (e) {
+        expect(e).toBeInstanceOf(AppError);
+        expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+        expect(e.message).toEqual('"email" must be a valid email');
+      }
+    });
+
+    it('should return error 400 if [password] is empty.', async () => {
+      genericLegalPerson = { ...genericLegalPerson, password: '' };
+
+      try {
+        await createPersonService.execute(genericLegalPerson);
+      } catch (e) {
+        expect(e).toBeInstanceOf(AppError);
+        expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+        expect(e.message).toEqual('"password" is not allowed to be empty');
+      }
+    });
+
+    it('should return error 400 if [password] has less than 3 digits.', async () => {
+      genericLegalPerson = { ...genericLegalPerson, password: '12' };
+
+      try {
+        await createPersonService.execute(genericLegalPerson);
+      } catch (e) {
+        expect(e).toBeInstanceOf(AppError);
+        expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+        expect(e.message).toEqual('"password" length must be at least 3 characters long');
+      }
+    });
+
+    it('should return error 400 if [avatarUrl] is an invalid uri.', async () => {
+      genericLegalPerson = { ...genericLegalPerson, avatarUrl: 'dude this is not an uri, see rfc 3986' };
+
+      try {
+        await createPersonService.execute(genericLegalPerson);
+      } catch (e) {
+        expect(e).toBeInstanceOf(AppError);
+        expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+        expect(e.message).toEqual('"avatarUrl" must be a valid uri');
+      }
+    });
+
+    it('should return error 400 if [landlinePhoneNumber] is not valid.', async () => {
+      genericLegalPerson = { ...genericLegalPerson, landlinePhoneNumber: 'dude this is not a valid number' };
+
+      try {
+        await createPersonService.execute(genericLegalPerson);
+      } catch (e) {
+        expect(e).toBeInstanceOf(AppError);
+        expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+        expect(e.message).toEqual('"landlinePhoneNumber" must be formatted like 55 44 3333-3333 or 3333-3333');
+      }
+    });
+
+    it('should return error 400 if [mobilePhoneNumber] is not valid.', async () => {
+      genericLegalPerson = { ...genericLegalPerson, mobilePhoneNumber: 'dude this is not a valid number' };
+
+      try {
+        await createPersonService.execute(genericLegalPerson);
+      } catch (e) {
+        expect(e).toBeInstanceOf(AppError);
+        expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+        expect(e.message).toEqual('"mobilePhoneNumber" must be formatted like 77 88 99999-9999 or 99999-9999');
+      }
+    });
+
+    it('should be able to save the [person] in the database and return the newly created [personId].', async () => {
+      const legalPersonCreated: LegalPerson = new LegalPerson();
+      legalPersonCreated.create(legalPerson);
+
+      const getPersonSpy = jest
+        .spyOn(personRegistry, 'getPerson')
+        .mockImplementation(() => personRegistry.getPerson(legalPerson))
+        .mockReturnValue(legalPersonCreated);
+
+      const findByDocumentSpy = jest
+        .spyOn(peopleRepository, 'findByDocument')
+        .mockImplementation(() => peopleRepository.findByDocument(legalPersonCreated.document))
+        .mockReturnValue(Promise.resolve(null));
+
+      const createPersonSpy = jest
+        .spyOn(peopleRepository, 'create')
+        .mockImplementation(() => peopleRepository.create(legalPerson))
+        .mockReturnValue(Promise.resolve(1));
+
+      const savedPerson = await createPersonService.execute(legalPerson);
+
+      expect(getPersonSpy).toHaveBeenCalledTimes(1);
+      expect(getPersonSpy).toHaveBeenCalledWith(legalPerson);
+
+      expect(findByDocumentSpy).toHaveBeenCalledTimes(1);
+      expect(findByDocumentSpy).toHaveBeenCalledWith(legalPersonCreated.document);
+
+      expect(createPersonSpy).toHaveBeenCalledTimes(1);
+
+      expect(savedPerson).toHaveProperty('personId');
+      expect(savedPerson).toEqual({ personId: 1 });
     });
   });
 });

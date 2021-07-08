@@ -63,7 +63,7 @@ class CreatePersonService {
     const personExists = await this.peopleRepository.findByDocument(document);
 
     if (personExists) {
-      throw new AppError('Person already registered.');
+      throw new AppError('Person already registered');
     }
 
     const hashSalt = 8;
