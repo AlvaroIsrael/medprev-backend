@@ -8,9 +8,9 @@ const addressSchema = Joi.object().keys({
 
   number: Joi.number().positive().allow(0).required(),
 
-  complement: Joi.string().max(150).required(),
+  complement: Joi.string().max(150),
 
-  district: Joi.string().min(1).max(150).required(),
+  district: Joi.string().min(1).max(150),
 
   city: Joi.string().min(1).max(50).required(),
 

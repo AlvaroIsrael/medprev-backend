@@ -212,7 +212,7 @@ describe('CreateAddressService', () => {
     const findByIdStub = jest
       .spyOn(peopleRepository, 'findById')
       .mockImplementation(() => peopleRepository.findById(address.personId))
-      .mockReturnValue(Promise.resolve(''));
+      .mockReturnValue(Promise.resolve(null));
 
     try {
       await createAddressService.execute(address);
@@ -260,7 +260,7 @@ describe('CreateAddressService', () => {
     const findByIdStub = jest
       .spyOn(peopleRepository, 'findById')
       .mockImplementation(() => peopleRepository.findById(address.personId))
-      .mockReturnValue(Promise.resolve(address.personId));
+      .mockReturnValue(Promise.resolve({ personId: parseInt(address.personId, 10) }));
 
     const existsStub = jest
       .spyOn(addressesRepository, 'exists')
