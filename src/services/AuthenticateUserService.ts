@@ -1,20 +1,10 @@
 import { sign } from 'jsonwebtoken';
 import { compare } from 'bcryptjs';
 import PeopleRepository from '../repositories/PeopleRepository';
-import Person from '../models/Person';
 import AppError from '../errors/AppError';
 import authConfig from '../config/auth';
-
-interface IRequest {
-  email: string;
-  password: string;
-  document: string;
-}
-
-interface IResponse {
-  user: Person;
-  token: string;
-}
+import { IAuthenticationRequest } from '../interfaces/IAuthenticationRequest';
+import { IAuthenticationResponse } from '../interfaces/IAuthenticationResponse';
 
 class AuthenticateUserService {
   private peopleRepository: PeopleRepository;
@@ -23,17 +13,21 @@ class AuthenticateUserService {
     this.peopleRepository = peopleRepository;
   }
 
-  public execute = async ({ document, password }: IRequest): Promise<IResponse> => {
+  public execute = async ({ document, password }: IAuthenticationRequest): Promise<IAuthenticationResponse> => {
     const user = await this.peopleRepository.findOne(document);
 
     if (!user) {
-      throw new AppError('Incorrect email or password.');
+      throw new AppError('Incorrect email or password');
     }
 
-    const passwordMatches = await compare(password, user?.password ?? '');
+    if (!user.password) {
+      throw new AppError('Incorrect email or password');
+    }
+
+    const passwordMatches = await compare(password, user.password);
 
     if (!passwordMatches) {
-      throw new AppError('Incorrect email or password.');
+      throw new AppError('Incorrect email or password');
     }
 
     const { secret, expiresIn } = authConfig.jwt;
