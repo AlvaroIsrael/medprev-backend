@@ -73,24 +73,21 @@ const naturalPersonSchema = Joi.object().keys({
 
   avatarUrl: Joi.string().uri(),
 
-  birthDate: Joi.string()
-    .pattern(new RegExp('^\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$'))
-    .required()
-    .error(new AppError('Date must be yyyy-MM-dd')),
+  birthDate: Joi.date().required(),
 
   document: Joi.string().custom(validateDocument, 'validates cpf'),
 
-  sex: Joi.string().valid('masculine', 'feminine').required(),
+  sex: Joi.string().valid('masculine', 'feminine').lowercase().required(),
 
   landlinePhoneNumber: Joi.string()
     .allow(null, '')
     .regex(/^(\(?\d{2}\)?\s)?(\(?\d{2}\)?\s)?(\d{4}-\d{4})$/)
-    .error(new AppError('"landlinePhoneNumber" must be formatted like (33) 3333-3333 or 3333-3333')),
+    .error(new AppError('"landlinePhoneNumber" must be formatted like 55 44 3333-3333 or 3333-3333')),
 
   mobilePhoneNumber: Joi.string()
     .allow(null, '')
     .regex(/^(\(?\d{2}\)?\s)?(\(?\d{2}\)?\s)?(\d{4,5}-\d{4})$/)
-    .error(new AppError('"mobilePhoneNumber" must be formatted like (99) 99999-9999 or 99999-9999')),
+    .error(new AppError('"mobilePhoneNumber" must be formatted like 77 88 99999-9999 or 99999-9999')),
 });
 
 export default naturalPersonSchema;

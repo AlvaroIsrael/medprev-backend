@@ -3,7 +3,7 @@ import AppError from '../errors/AppError';
 import { IPersonRequest } from '../interfaces/IPersonRequest';
 import PersonRegistry from '../services/PersonRegistry';
 import Person from '../models/Person';
-import NatualPerson from '../models/NatualPerson';
+import NaturalPerson from '../models/NaturalPerson';
 import LegalPerson from '../models/LegalPerson';
 
 let personRegistry: PersonRegistry;
@@ -24,7 +24,7 @@ describe('PersonRegistry', () => {
       landlinePhoneNumber: '55 31 3333-9999',
       mobilePhoneNumber: '55 31 99999-9999',
       avatarUrl: 'https://mysuper-url',
-      sex: 'm',
+      sex: 'masculine',
       birthDate: new Date('2020-12-05'),
     } as IPersonRequest;
 
@@ -60,7 +60,7 @@ describe('PersonRegistry', () => {
   it('should be able to instanciate a natural person.', async () => {
     const person: Person = personRegistry.getPerson(naturalPersonRequest);
 
-    expect(person).toBeInstanceOf(NatualPerson);
+    expect(person).toBeInstanceOf(NaturalPerson);
   });
 
   it('should be able to instanciate a legal person.', async () => {

@@ -2,8 +2,8 @@ import naturalPersonSchema from '../helpers/naturalPerson.schema';
 import Person from './Person';
 import { IPersonRequest } from '../interfaces/IPersonRequest';
 
-class NatualPerson extends Person {
-  sex: string;
+class NaturalPerson extends Person {
+  sex: 'masculine' | 'feminine';
 
   birthDate: Date;
 
@@ -52,4 +52,4 @@ class NatualPerson extends Person {
   }
 }
 
-export default NatualPerson;
+export default NaturalPerson;
