@@ -1,5 +1,5 @@
 import Person from '../models/Person';
-import NatualPerson from '../models/NatualPerson';
+import NaturalPerson from '../models/NaturalPerson';
 import AppError from '../errors/AppError';
 import LegalPerson from '../models/LegalPerson';
 import { IPersonRequest } from '../interfaces/IPersonRequest';
@@ -9,7 +9,7 @@ class PersonRegistry {
 
   constructor() {
     this.people.set('legal', new LegalPerson());
-    this.people.set('natural', new NatualPerson());
+    this.people.set('natural', new NaturalPerson());
   }
 
   private instanciatePerson = (kind: string): Person => {

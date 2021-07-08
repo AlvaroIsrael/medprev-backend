@@ -10,6 +10,6 @@ export type IPersonRequest = {
   landlinePhoneNumber: string;
   mobilePhoneNumber: string;
   avatarUrl: string;
-  sex: string;
+  sex: 'masculine' | 'feminine';
   birthDate: Date;
 };
