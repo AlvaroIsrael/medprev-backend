@@ -2,12 +2,7 @@ import Person from '../models/Person';
 import PeopleRepository from '../repositories/PeopleRepository';
 
 interface IPersonRequest {
-  page: number;
-  pageLimit: number;
-}
-
-interface IPersonResponse {
-  peopleId: string;
+  personId: number;
 }
 
 class ListPersonService {
@@ -17,8 +12,12 @@ class ListPersonService {
     this.peopleRepository = peopleRepository;
   }
 
-  public async execute({ page, pageLimit }: IPersonRequest): Promise<Person[]> {
-    return this.peopleRepository.all({ page, pageLimit });
+  public async execute({ personId }: IPersonRequest): Promise<Person | null> {
+    const person = await this.peopleRepository.findOneById(personId);
+
+    delete person?.password;
+
+    return person;
   }
 }
 

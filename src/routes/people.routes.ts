@@ -1,12 +1,16 @@
 import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import PersonRegistry from '@services/PersonRegistry';
+import PersonRegistry from '../services/PersonRegistry';
 import CreatePersonService from '../services/CreatePersonService';
 // import ensureAuthenticated from '../middleares/ensureAuthenticated';
 import PeopleRepository from '../repositories/PeopleRepository';
+import ListPersonService from '../services/ListPersonService';
+import ListPeopleService from '../services/ListPeopleService';
 
 const peopleRepository = new PeopleRepository();
 const personRegistry = new PersonRegistry();
+const listPersonService = new ListPersonService(peopleRepository);
+const listPeopleService = new ListPeopleService(peopleRepository);
 const createPersonService = new CreatePersonService(peopleRepository, personRegistry);
 
 const peopleRouter = Router();
@@ -46,24 +50,37 @@ peopleRouter.post('/', async (request, response) => {
   return response.status(StatusCodes.OK).json({ ...user });
 });
 
+/* Gets all people. */
+peopleRouter.get('/', async (request, response) => {
+  const { page, pageLimit } = request.body;
+
+  try {
+    const people = await listPeopleService.execute({ page, pageLimit });
+
+    return response.status(StatusCodes.OK).json({ people });
+  } catch (e) {
+    if (e.message === 'Only admin can update roles.') {
+      return response.status(StatusCodes.UNAUTHORIZED).json({ erro: e.message });
+    }
+    return response.status(StatusCodes.NOT_FOUND).json({ erro: e.message });
+  }
+});
+
 /* Gets a person. */
-/* peopleRouter.get('/:id', ensureAuthenticated, async (request, response) => {
- const { id } = request.params;
- const { name, password } = request.body;
+peopleRouter.get('/:id', async (request, response) => {
+  const { id } = request.params;
 
- const updateUserService = new ListPersonService();
+  try {
+    const people = await listPersonService.execute({ personId: parseInt(id, 10) });
 
- try {
- const people = await listPersonService.execute({ page, pageLimit });
-
- return response.status(StatusCodes.OK).json({ people });
- } catch (e) {
- if (e.message === 'Only admin can update roles.') {
- return response.status(StatusCodes.UNAUTHORIZED).json({ erro: e.message });
- }
- return response.status(StatusCodes.NOT_FOUND).json({ erro: e.message });
- }
- }); */
+    return response.status(StatusCodes.OK).json({ people });
+  } catch (e) {
+    if (e.message === 'Only admin can update roles.') {
+      return response.status(StatusCodes.UNAUTHORIZED).json({ erro: e.message });
+    }
+    return response.status(StatusCodes.NOT_FOUND).json({ erro: e.message });
+  }
+});
 
 /* Updates a person. */
 /* peopleRouter.put('/:id', ensureAuthenticated, async (request, response) => {
