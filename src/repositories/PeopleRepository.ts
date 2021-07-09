@@ -74,6 +74,47 @@ class PeopleRepository {
     return personFound[0];
   }
 
+  /* Find one person by its id. */
+  public async findOneById(personId: number): Promise<Person | null> {
+    const people = await this.connection('people').select(['*']).from('people').where({ personId }).limit(1);
+
+    let person: Person | null = null;
+
+    people.forEach(personInDataBase => {
+      const {
+        kind,
+        role,
+        document,
+        corporateName,
+        name,
+        email,
+        password,
+        landlinePhoneNumber,
+        mobilePhoneNumber,
+        avatarUrl,
+        sex,
+        birthDate,
+      } = personInDataBase;
+
+      person = new PersonRegistry().getPerson({
+        kind,
+        role,
+        document,
+        corporateName,
+        name,
+        email,
+        password,
+        landlinePhoneNumber,
+        mobilePhoneNumber,
+        avatarUrl,
+        sex,
+        birthDate,
+      });
+    });
+
+    return person;
+  }
+
   /* Find a person by its document. */
   public async findOne(document: string): Promise<Person | null> {
     const people = await this.connection('people').select(['*']).from('people').where({ document }).limit(1);
