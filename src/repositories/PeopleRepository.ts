@@ -169,6 +169,40 @@ class PeopleRepository {
     return personFound[0];
   }
 
+  /* Updates a person. */
+  public async update({
+    personId,
+    kind,
+    role,
+    document,
+    corporateName,
+    name,
+    email,
+    password,
+    landlinePhoneNumber,
+    mobilePhoneNumber,
+    avatarUrl,
+    sex,
+    birthDate,
+  }: IPersonRequest): Promise<number> {
+    return this.connection('people')
+      .update({
+        kind,
+        role,
+        document,
+        corporateName,
+        name,
+        email,
+        password,
+        landlinePhoneNumber,
+        mobilePhoneNumber,
+        avatarUrl,
+        sex,
+        birthDate,
+      })
+      .where({ personId });
+  }
+
   /* Creates a new person. */
   public async create({
     kind,
