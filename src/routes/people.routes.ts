@@ -6,11 +6,13 @@ import CreatePersonService from '../services/CreatePersonService';
 import PeopleRepository from '../repositories/PeopleRepository';
 import ListPersonService from '../services/ListPersonService';
 import ListPeopleService from '../services/ListPeopleService';
+import UpdatePersonService from '../services/UpdatePersonService';
 
 const peopleRepository = new PeopleRepository();
 const personRegistry = new PersonRegistry();
 const listPersonService = new ListPersonService(peopleRepository);
 const listPeopleService = new ListPeopleService(peopleRepository);
+const updatePersonService = new UpdatePersonService(peopleRepository, personRegistry);
 const createPersonService = new CreatePersonService(peopleRepository, personRegistry);
 
 const peopleRouter = Router();
@@ -67,11 +69,11 @@ peopleRouter.get('/', async (request, response) => {
 });
 
 /* Gets a person. */
-peopleRouter.get('/:id', async (request, response) => {
-  const { id } = request.params;
+peopleRouter.get('/:personId', async (request, response) => {
+  const { personId } = request.params;
 
   try {
-    const people = await listPersonService.execute({ personId: parseInt(id, 10) });
+    const people = await listPersonService.execute({ personId: parseInt(personId, 10) });
 
     return response.status(StatusCodes.OK).json({ people });
   } catch (e) {
@@ -83,23 +85,48 @@ peopleRouter.get('/:id', async (request, response) => {
 });
 
 /* Updates a person. */
-/* peopleRouter.put('/:id', ensureAuthenticated, async (request, response) => {
- const { id } = request.params;
- const { name, password } = request.body;
+peopleRouter.patch('/:personId', async (request, response) => {
+  const { personId } = request.params;
+  const {
+    kind,
+    role,
+    document,
+    corporateName,
+    name,
+    email,
+    password,
+    landlinePhoneNumber,
+    mobilePhoneNumber,
+    avatarUrl,
+    sex,
+    birthDate,
+  } = request.body;
 
- const updateUserService = new UpdatePersonService();
+  try {
+    await updatePersonService.execute({
+      personId: parseInt(personId, 10),
+      kind,
+      role,
+      document,
+      corporateName,
+      name,
+      email,
+      password,
+      landlinePhoneNumber,
+      mobilePhoneNumber,
+      avatarUrl,
+      sex,
+      birthDate,
+    });
 
- try {
- await updateUserService.execute({ id, name, password });
-
- return response.status(StatusCodes.NO_CONTENT).json();
- } catch (e) {
- if (e.message === 'Only admin can update roles.') {
- return response.status(StatusCodes.UNAUTHORIZED).json({ erro: e.message });
- }
- return response.status(StatusCodes.BAD_REQUEST).json({ erro: e.message });
- }
- }); */
+    return response.status(StatusCodes.NO_CONTENT).json();
+  } catch (e) {
+    if (e.message === 'Only admin can update roles.') {
+      return response.status(StatusCodes.UNAUTHORIZED).json({ erro: e.message });
+    }
+    return response.status(StatusCodes.BAD_REQUEST).json({ erro: e.message });
+  }
+});
 
 /* Deletes a person. */
 /* peopleRouter.delete('/:id', ensureAuthenticated, async (request, response) => {
