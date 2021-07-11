@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import DeletePersonService from '../services/DeletePersonService';
 import PersonRegistry from '../services/PersonRegistry';
 import CreatePersonService from '../services/CreatePersonService';
 // import ensureAuthenticated from '../middleares/ensureAuthenticated';
@@ -12,6 +13,7 @@ const peopleRepository = new PeopleRepository();
 const personRegistry = new PersonRegistry();
 const listPersonService = new ListPersonService(peopleRepository);
 const listPeopleService = new ListPeopleService(peopleRepository);
+const deletePersonService = new DeletePersonService(peopleRepository);
 const updatePersonService = new UpdatePersonService(peopleRepository, personRegistry);
 const createPersonService = new CreatePersonService(peopleRepository, personRegistry);
 
@@ -34,20 +36,25 @@ peopleRouter.post('/', async (request, response) => {
     birthDate,
   } = request.body;
 
-  const user = await createPersonService.execute({
-    kind,
-    role,
-    document,
-    corporateName,
-    name,
-    email,
-    password,
-    landlinePhoneNumber,
-    mobilePhoneNumber,
-    avatarUrl,
-    sex,
-    birthDate,
-  });
+  let user;
+  try {
+    user = await createPersonService.execute({
+      kind,
+      role,
+      document,
+      corporateName,
+      name,
+      email,
+      password,
+      landlinePhoneNumber,
+      mobilePhoneNumber,
+      avatarUrl,
+      sex,
+      birthDate,
+    });
+  } catch (e) {
+    return response.status(StatusCodes.NOT_FOUND).json({ erro: e.message });
+  }
 
   return response.status(StatusCodes.OK).json({ ...user });
 });
@@ -129,18 +136,16 @@ peopleRouter.patch('/:personId', async (request, response) => {
 });
 
 /* Deletes a person. */
-/* peopleRouter.delete('/:id', ensureAuthenticated, async (request, response) => {
- const { id } = request.params;
+peopleRouter.delete('/:personId', async (request, response) => {
+  const { personId } = request.params;
 
- //const usersRepository = getRepository(Person);
+  try {
+    await deletePersonService.execute({ personId: parseInt(personId, 10) });
 
- try {
- await usersRepository.delete(id);
-
- return response.status(StatusCodes.NO_CONTENT).json();
- } catch (e) {
- return response.status(StatusCodes.BAD_REQUEST).json({ erro: e.message });
- }
- }); */
+    return response.status(StatusCodes.NO_CONTENT).json();
+  } catch (e) {
+    return response.status(StatusCodes.BAD_REQUEST).json({ erro: e.message });
+  }
+});
 
 export default peopleRouter;

@@ -169,6 +169,11 @@ class PeopleRepository {
     return personFound[0];
   }
 
+  /* Deletes a person. */
+  public async delete(personId: number): Promise<number> {
+    return this.connection('people').where({ personId }).del();
+  }
+
   /* Updates a person. */
   public async update({
     personId,
