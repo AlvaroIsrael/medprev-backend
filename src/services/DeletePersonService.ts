@@ -2,7 +2,7 @@ import PeopleRepository from '../repositories/PeopleRepository';
 import AppError from '../errors/AppError';
 
 interface IPersonRequest {
-  personId: number;
+  personId: string;
 }
 
 type IPersonResponse = {

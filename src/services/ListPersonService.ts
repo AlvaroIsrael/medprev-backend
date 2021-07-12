@@ -2,7 +2,7 @@ import Person from '../models/Person';
 import PeopleRepository from '../repositories/PeopleRepository';
 
 interface IPersonRequest {
-  personId: number;
+  personId: string;
 }
 
 class ListPersonService {

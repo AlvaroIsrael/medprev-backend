@@ -1,5 +1,5 @@
 export type IPersonRequest = {
-  personId?: number;
+  personId?: string;
   kind: 'legal' | 'natural';
   role: 'admin' | 'default';
   corporateName: string;

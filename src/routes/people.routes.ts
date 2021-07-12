@@ -80,7 +80,7 @@ peopleRouter.get('/:personId', async (request, response) => {
   const { personId } = request.params;
 
   try {
-    const people = await listPersonService.execute({ personId: parseInt(personId, 10) });
+    const people = await listPersonService.execute({ personId });
 
     return response.status(StatusCodes.OK).json({ people });
   } catch (e) {
@@ -111,7 +111,7 @@ peopleRouter.patch('/:personId', async (request, response) => {
 
   try {
     await updatePersonService.execute({
-      personId: parseInt(personId, 10),
+      personId,
       kind,
       role,
       document,
@@ -140,7 +140,7 @@ peopleRouter.delete('/:personId', async (request, response) => {
   const { personId } = request.params;
 
   try {
-    await deletePersonService.execute({ personId: parseInt(personId, 10) });
+    await deletePersonService.execute({ personId });
 
     return response.status(StatusCodes.NO_CONTENT).json();
   } catch (e) {

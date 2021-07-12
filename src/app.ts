@@ -4,6 +4,7 @@ import cors from 'cors';
 import { StatusCodes } from 'http-status-codes';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
+import { errors } from 'celebrate';
 import routes from './routes';
 import AppError from './errors/AppError';
 // import './database';
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/v1/docs', swaggerUi.serve, swaggerUi.setup(swagger));
 app.use(routes);
+app.use(errors());
 
 app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
   if (err instanceof AppError) {
