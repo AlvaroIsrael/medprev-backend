@@ -75,7 +75,7 @@ class PeopleRepository {
   }
 
   /* Find one person by its id. */
-  public async findOneById(personId: number): Promise<Person | null> {
+  public async findOneById(personId: string): Promise<Person | null> {
     const people = await this.connection('people').select(['*']).from('people').where({ personId }).limit(1);
 
     let person: Person | null = null;
@@ -156,7 +156,7 @@ class PeopleRepository {
   }
 
   /* Find a person id and password by its document. */
-  public async findByDocument(document: string): Promise<{ personId: number; password: string; } | null> {
+  public async findByDocument(document: string): Promise<{ personId: number; password: string } | null> {
     const personFound = await this.connection('people')
       .select('personId', 'password')
       .from('people')
@@ -170,7 +170,7 @@ class PeopleRepository {
   }
 
   /* Deletes a person. */
-  public async delete(personId: number): Promise<number> {
+  public async delete(personId: string): Promise<number> {
     return this.connection('people').where({ personId }).del();
   }
 

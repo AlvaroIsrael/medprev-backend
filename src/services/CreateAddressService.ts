@@ -45,7 +45,7 @@ class CreateAddressService {
       throw new AppError(error);
     }
 
-    const personExists = await this.peopleRepository.findById(personId);
+    const personExists = await this.peopleRepository.findById(address.personId.toString());
 
     if (!personExists) {
       throw new AppError('This person does not exist');

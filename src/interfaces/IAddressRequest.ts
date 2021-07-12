@@ -1,4 +1,5 @@
 export type IAddressRequest = {
+  addressId?: string;
   personId: string;
   street: string;
   number: number;
