@@ -68,9 +68,6 @@ peopleRouter.get('/', async (request, response) => {
 
     return response.status(StatusCodes.OK).json({ people });
   } catch (e) {
-    if (e.message === 'Only admin can update roles.') {
-      return response.status(StatusCodes.UNAUTHORIZED).json({ erro: e.message });
-    }
     return response.status(StatusCodes.NOT_FOUND).json({ erro: e.message });
   }
 });

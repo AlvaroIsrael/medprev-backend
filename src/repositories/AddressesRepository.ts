@@ -3,6 +3,11 @@ import connection from '../database/connection';
 import { IAddressRequest } from '../interfaces/IAddressRequest';
 import Address from '../models/Address';
 
+interface IListRequest {
+  page: number;
+  pageLimit: number;
+}
+
 class AddressesRepository {
   private readonly connection: Knex;
 
@@ -143,6 +148,35 @@ class AddressesRepository {
         zipCode,
       })
       .where({ addressId, personId });
+  }
+
+  /* Deletes an address. */
+  public async delete(addressId: string): Promise<number> {
+    return this.connection('addresses').where({ addressId }).del();
+  }
+
+  /* List all addresses. */
+  public async all({ page, pageLimit }: IListRequest): Promise<Address[]> {
+    const addresses = await this.connection('addresses')
+      .select(['*'])
+      .from('addresses')
+      .limit(5)
+      .offset((page - 1) * pageLimit);
+
+    return addresses.map(
+      address =>
+        new Address({
+          addressId: address.addressId,
+          personId: address.personId,
+          street: address.street,
+          number: address.number,
+          complement: address.complement,
+          district: address.district,
+          city: address.city,
+          state: address.state,
+          zipCode: address.zipCode,
+        }),
+    );
   }
 }
 
