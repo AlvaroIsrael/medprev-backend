@@ -1,4 +1,5 @@
 import AddressesRepository from 'repositories/AddressesRepository';
+import AppError from '../errors/AppError';
 
 interface IAddressRequest {
   addressId: string;
@@ -17,13 +18,13 @@ class DeleteAdressService {
 
   public async execute({ addressId }: IAddressRequest): Promise<IAddressResponse> {
     if (!addressId) {
-      throw new Error('Address id is required');
+      throw new AppError('"addressId" is not allowed to be empty');
     }
 
     const addressExists = await this.addressesRepository.findOneById(addressId);
 
     if (!addressExists) {
-      throw new Error(`Address not found`);
+      throw new AppError('address not found');
     }
 
     const deleteSuccessful = await this.addressesRepository.delete(addressId);
@@ -31,4 +32,5 @@ class DeleteAdressService {
     return { success: !!deleteSuccessful };
   }
 }
+
 export default DeleteAdressService;
