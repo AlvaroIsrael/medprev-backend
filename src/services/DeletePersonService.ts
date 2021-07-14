@@ -18,13 +18,13 @@ class DeletePersonService {
 
   public execute = async ({ personId }: IPersonRequest): Promise<IPersonResponse> => {
     if (!personId) {
-      throw new AppError('Person id is required');
+      throw new AppError('"personId" is not allowed to be empty');
     }
 
     const personExists = await this.peopleRepository.findOneById(personId);
 
     if (!personExists) {
-      throw new AppError('Person not found');
+      throw new AppError('person not found');
     }
 
     const deleteSuccessful = await this.peopleRepository.delete(personId);
