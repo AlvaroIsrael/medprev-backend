@@ -121,7 +121,7 @@ describe('CreatePersonService', () => {
 
     const findByDocumentSpy = jest
       .spyOn(peopleRepository, 'findByDocument')
-      .mockImplementation(() => peopleRepository.findByDocument(legalPersonCreated.document))
+      .mockImplementation(async () => peopleRepository.findByDocument(legalPersonCreated.document))
       .mockReturnValue(
         Promise.resolve({
           personId: 1,
@@ -367,12 +367,12 @@ describe('CreatePersonService', () => {
 
       const findByDocumentSpy = jest
         .spyOn(peopleRepository, 'findByDocument')
-        .mockImplementation(() => peopleRepository.findByDocument(legalPersonCreated.document))
+        .mockImplementation(async () => peopleRepository.findByDocument(legalPersonCreated.document))
         .mockReturnValue(Promise.resolve(null));
 
       const createPersonSpy = jest
         .spyOn(peopleRepository, 'create')
-        .mockImplementation(() => peopleRepository.create(legalPerson))
+        .mockImplementation(async () => peopleRepository.create(legalPerson))
         .mockReturnValue(Promise.resolve(1));
 
       const savedPerson = await createPersonService.execute(legalPerson);
@@ -616,12 +616,12 @@ describe('CreatePersonService', () => {
 
       const findByDocumentSpy = jest
         .spyOn(peopleRepository, 'findByDocument')
-        .mockImplementation(() => peopleRepository.findByDocument(natualPersonCreated.document))
+        .mockImplementation(async () => peopleRepository.findByDocument(natualPersonCreated.document))
         .mockReturnValue(Promise.resolve(null));
 
       const createPersonSpy = jest
         .spyOn(peopleRepository, 'create')
-        .mockImplementation(() => peopleRepository.create(naturalPerson))
+        .mockImplementation(async () => peopleRepository.create(naturalPerson))
         .mockReturnValue(Promise.resolve(1));
 
       const savedPerson = await createPersonService.execute(naturalPerson);

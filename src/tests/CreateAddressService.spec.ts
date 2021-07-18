@@ -211,7 +211,7 @@ describe('CreateAddressService', () => {
   it('should return error 400 if [personId] is invalid.', async () => {
     const findByIdStub = jest
       .spyOn(peopleRepository, 'findById')
-      .mockImplementation(() => peopleRepository.findById(address.personId))
+      .mockImplementation(async () => peopleRepository.findById(address.personId))
       .mockReturnValue(Promise.resolve(null));
 
     try {
@@ -242,7 +242,7 @@ describe('CreateAddressService', () => {
   it('should return error 400 if [address] already exists in the database.', async () => {
     const existsStub = jest
       .spyOn(addressesRepository, 'exists')
-      .mockImplementation(() => addressesRepository.exists(address))
+      .mockImplementation(async () => addressesRepository.exists(address))
       .mockReturnValue(Promise.resolve(true));
 
     try {
@@ -259,17 +259,17 @@ describe('CreateAddressService', () => {
   it('should be able to save the [address] in the database and return the newly created [addressId].', async () => {
     const findByIdStub = jest
       .spyOn(peopleRepository, 'findById')
-      .mockImplementation(() => peopleRepository.findById(address.personId))
+      .mockImplementation(async () => peopleRepository.findById(address.personId))
       .mockReturnValue(Promise.resolve({ personId: parseInt(address.personId, 10) }));
 
     const existsStub = jest
       .spyOn(addressesRepository, 'exists')
-      .mockImplementation(() => addressesRepository.exists(address))
+      .mockImplementation(async () => addressesRepository.exists(address))
       .mockReturnValue(Promise.resolve(false));
 
     const addressesRepositoryStub = jest
       .spyOn(addressesRepository, 'create')
-      .mockImplementation(() => addressesRepository.create(address))
+      .mockImplementation(async () => addressesRepository.create(address))
       .mockReturnValue(Promise.resolve(1));
 
     const savedAddress = await createAddressService.execute(address);

@@ -36,7 +36,7 @@ describe('AuthenticateUserService', () => {
 
     const findOneSpy = jest
       .spyOn(peopleRepository, 'findOne')
-      .mockImplementation(() => peopleRepository.findOne(user.document))
+      .mockImplementation(async () => peopleRepository.findOne(user.document))
       .mockReturnValue(Promise.resolve(null));
 
     try {
@@ -58,7 +58,7 @@ describe('AuthenticateUserService', () => {
 
     const findOneSpy = jest
       .spyOn(peopleRepository, 'findOne')
-      .mockImplementation(() => peopleRepository.findOne(user.document))
+      .mockImplementation(async () => peopleRepository.findOne(user.document))
       .mockReturnValue(Promise.resolve(null));
 
     try {
@@ -81,7 +81,7 @@ describe('AuthenticateUserService', () => {
 
     const findOneSpy = jest
       .spyOn(peopleRepository, 'findOne')
-      .mockImplementation(() => peopleRepository.findOne(user.document))
+      .mockImplementation(async () => peopleRepository.findOne(user.document))
       .mockReturnValue(Promise.resolve(natualPersonCreated));
 
     try {
@@ -103,7 +103,7 @@ describe('AuthenticateUserService', () => {
 
     const findOneSpy = jest
       .spyOn(peopleRepository, 'findOne')
-      .mockImplementation(() => peopleRepository.findOne(user.document))
+      .mockImplementation(async () => peopleRepository.findOne(user.document))
       .mockReturnValue(Promise.resolve(natualPersonCreated));
 
     try {
@@ -129,7 +129,7 @@ describe('AuthenticateUserService', () => {
 
     const findOneSpy = jest
       .spyOn(peopleRepository, 'findOne')
-      .mockImplementation(() => peopleRepository.findOne(user.document))
+      .mockImplementation(async () => peopleRepository.findOne(user.document))
       .mockReturnValue(Promise.resolve(naturalPersonCreated));
 
     const authenticatedUser = await authenticateUserService.execute(user);
