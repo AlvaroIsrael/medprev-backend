@@ -1,10 +1,6 @@
 import Address from 'models/Address';
 import AddressesRepository from 'repositories/AddressesRepository';
-
-interface IAddressRequest {
-  page: number;
-  pageLimit: number;
-}
+import { IListRequest } from '../interfaces/IListRequest';
 
 class ListAddressService {
   private addressesRepository: AddressesRepository;
@@ -13,7 +9,7 @@ class ListAddressService {
     this.addressesRepository = addressesRepository;
   }
 
-  public async execute({ page, pageLimit }: IAddressRequest): Promise<Address[]> {
+  public async execute({ page, pageLimit }: IListRequest): Promise<Address[]> {
     return this.addressesRepository.all({ page, pageLimit });
   }
 }
