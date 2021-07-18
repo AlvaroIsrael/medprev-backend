@@ -1,10 +1,6 @@
 import Person from '../models/Person';
 import PeopleRepository from '../repositories/PeopleRepository';
-
-interface IPersonRequest {
-  page: number;
-  pageLimit: number;
-}
+import { IListRequest } from '../interfaces/IListRequest';
 
 class ListPeopleService {
   private peopleRepository: PeopleRepository;
@@ -13,7 +9,7 @@ class ListPeopleService {
     this.peopleRepository = peopleRepository;
   }
 
-  public async execute({ page, pageLimit }: IPersonRequest): Promise<Person[]> {
+  public async execute({ page, pageLimit }: IListRequest): Promise<Person[]> {
     const people = await this.peopleRepository.all({ page, pageLimit });
 
     people.forEach(person => delete person.password);
