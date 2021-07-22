@@ -39,7 +39,7 @@ class CreateAddressService {
       zipCode,
     });
 
-    const { isValidAddress, error } = address.isValid();
+    const { isValidAddress, error } = await address.isValid();
 
     if (!isValidAddress) {
       throw new AppError(error);

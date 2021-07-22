@@ -16,5 +16,5 @@ export interface IPerson {
     birthDate,
   }: IPersonRequest): void;
 
-  isValid(): { isValidPerson: boolean; error: string };
+  isValid(): Promise<{ isValidPerson: boolean; error: string }>;
 }

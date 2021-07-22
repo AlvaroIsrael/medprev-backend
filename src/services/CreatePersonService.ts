@@ -54,7 +54,7 @@ class CreatePersonService {
       throw new AppError(e.message);
     }
 
-    const { isValidPerson, error } = person.isValid();
+    const { isValidPerson, error } = await person.isValid();
 
     if (!isValidPerson) {
       throw new AppError(error);

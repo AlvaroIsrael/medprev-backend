@@ -54,7 +54,7 @@ class UpdateAddressService {
       throw new AppError('Address not found');
     }
 
-    const { isValidAddress, error } = address.isValid();
+    const { isValidAddress, error } = await address.isValid();
 
     if (!isValidAddress) {
       throw new AppError(error);
