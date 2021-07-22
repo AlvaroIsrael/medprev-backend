@@ -35,8 +35,8 @@ class Address {
     this.zipCode = zipCode;
   }
 
-  public isValid = (): { isValidAddress: boolean; error: string } => {
-    const validation = addressSchema.validate({
+  public isValid = async (): Promise<{ isValidAddress: boolean; error: string }> => {
+    const validation = await addressSchema.validate({
       personId: this.personId,
       street: this.street,
       number: this.number,

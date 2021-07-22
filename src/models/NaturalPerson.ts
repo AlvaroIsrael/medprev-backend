@@ -7,8 +7,8 @@ class NaturalPerson extends Person {
 
   birthDate: Date;
 
-  public isValid = (): { isValidPerson: boolean; error: string } => {
-    const validation = naturalPersonSchema.validate({
+  public isValid = async (): Promise<{ isValidPerson: boolean; error: string }> => {
+    const validation = await naturalPersonSchema.validate({
       kind: this.kind,
       role: this.role,
       document: this.document,

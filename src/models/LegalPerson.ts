@@ -5,8 +5,8 @@ import { IPersonRequest } from '../interfaces/IPersonRequest';
 class LegalPerson extends Person {
   corporateName: string;
 
-  public isValid = (): { isValidPerson: boolean; error: string } => {
-    const validation = legalPersonSchema.validate({
+  public isValid = async (): Promise<{ isValidPerson: boolean; error: string }> => {
+    const validation = await legalPersonSchema.validate({
       kind: this.kind,
       role: this.role,
       document: this.document,

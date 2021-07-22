@@ -31,7 +31,7 @@ abstract class Person implements IPerson {
 
   addresses: Address[];
 
-  abstract isValid(): { isValidPerson: boolean; error: string };
+  abstract isValid(): Promise<{ isValidPerson: boolean; error: string }>;
 
   abstract create({
     kind,
