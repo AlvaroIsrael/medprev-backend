@@ -180,6 +180,33 @@ describe('UpdatePersonService', () => {
     }
   });
 
+  it('should return error 400 if [email] parameter is not an email.', async () => {
+    genericLegalPerson = { ...genericLegalPerson, email: 'dude this is not an email!' };
+    const legalPersonCreated: LegalPerson = new LegalPerson();
+    legalPersonCreated.create(genericLegalPerson);
+
+    const findOneByIdStub = jest
+      .spyOn(peopleRepository, 'findOneById')
+      .mockImplementation(async () => peopleRepository.findOneById(genericLegalPerson.personId))
+      .mockReturnValue(Promise.resolve(legalPersonCreated));
+
+    const getPersonSpy = jest
+      .spyOn(personRegistry, 'getPerson')
+      .mockImplementation(() => personRegistry.getPerson(genericLegalPerson))
+      .mockReturnValue(legalPersonCreated);
+
+    try {
+      await updatePersonService.execute(genericLegalPerson);
+    } catch (e) {
+      expect(findOneByIdStub).toHaveBeenCalledTimes(1);
+      expect(findOneByIdStub).toHaveBeenCalledWith(genericLegalPerson.personId);
+      expect(getPersonSpy).toHaveBeenCalledTimes(1);
+      expect(e).toBeInstanceOf(AppError);
+      expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(e.message).toEqual('"email" must be a valid email');
+    }
+  });
+
   it('should return error 400 if [name] parameter has more than 100 characters.', async () => {
     genericLegalPerson = {
       ...genericLegalPerson,
@@ -239,92 +266,6 @@ describe('UpdatePersonService', () => {
     }
   });
 
-  it('should return error 400 if [corporateName] parameter has more than 100 characters.', async () => {
-    genericLegalPerson = {
-      ...genericLegalPerson,
-      corporateName:
-        'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. ' +
-        'Aenean massa. Tum sociis natoque penatibus et magnis dis parturient.',
-    };
-    const legalPersonCreated: LegalPerson = new LegalPerson();
-    legalPersonCreated.create(genericLegalPerson);
-
-    const findOneByIdStub = jest
-      .spyOn(peopleRepository, 'findOneById')
-      .mockImplementation(async () => peopleRepository.findOneById(genericLegalPerson.personId))
-      .mockReturnValue(Promise.resolve(legalPersonCreated));
-
-    const getPersonSpy = jest
-      .spyOn(personRegistry, 'getPerson')
-      .mockImplementation(() => personRegistry.getPerson(genericLegalPerson))
-      .mockReturnValue(legalPersonCreated);
-
-    try {
-      await updatePersonService.execute(genericLegalPerson);
-    } catch (e) {
-      expect(findOneByIdStub).toHaveBeenCalledTimes(1);
-      expect(findOneByIdStub).toHaveBeenCalledWith(genericLegalPerson.personId);
-      expect(getPersonSpy).toHaveBeenCalledTimes(1);
-      expect(e).toBeInstanceOf(AppError);
-      expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-      expect(e.message).toEqual('"corporateName" length must be less than or equal to 100 characters long');
-    }
-  });
-
-  it('should return error 400 if [corporateName] parameter has less than 3 characters.', async () => {
-    genericLegalPerson = { ...genericLegalPerson, corporateName: 'Lo' };
-    const legalPersonCreated: LegalPerson = new LegalPerson();
-    legalPersonCreated.create(genericLegalPerson);
-
-    const findOneByIdStub = jest
-      .spyOn(peopleRepository, 'findOneById')
-      .mockImplementation(async () => peopleRepository.findOneById(genericLegalPerson.personId))
-      .mockReturnValue(Promise.resolve(legalPersonCreated));
-
-    const getPersonSpy = jest
-      .spyOn(personRegistry, 'getPerson')
-      .mockImplementation(() => personRegistry.getPerson(genericLegalPerson))
-      .mockReturnValue(legalPersonCreated);
-
-    try {
-      await updatePersonService.execute(genericLegalPerson);
-    } catch (e) {
-      expect(findOneByIdStub).toHaveBeenCalledTimes(1);
-      expect(findOneByIdStub).toHaveBeenCalledWith(genericLegalPerson.personId);
-      expect(getPersonSpy).toHaveBeenCalledTimes(1);
-      expect(e).toBeInstanceOf(AppError);
-      expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-      expect(e.message).toEqual('"corporateName" length must be at least 3 characters long');
-    }
-  });
-
-  it('should return error 400 if [email] parameter is not an email.', async () => {
-    genericLegalPerson = { ...genericLegalPerson, email: 'dude this is not an email!' };
-    const legalPersonCreated: LegalPerson = new LegalPerson();
-    legalPersonCreated.create(genericLegalPerson);
-
-    const findOneByIdStub = jest
-      .spyOn(peopleRepository, 'findOneById')
-      .mockImplementation(async () => peopleRepository.findOneById(genericLegalPerson.personId))
-      .mockReturnValue(Promise.resolve(legalPersonCreated));
-
-    const getPersonSpy = jest
-      .spyOn(personRegistry, 'getPerson')
-      .mockImplementation(() => personRegistry.getPerson(genericLegalPerson))
-      .mockReturnValue(legalPersonCreated);
-
-    try {
-      await updatePersonService.execute(genericLegalPerson);
-    } catch (e) {
-      expect(findOneByIdStub).toHaveBeenCalledTimes(1);
-      expect(findOneByIdStub).toHaveBeenCalledWith(genericLegalPerson.personId);
-      expect(getPersonSpy).toHaveBeenCalledTimes(1);
-      expect(e).toBeInstanceOf(AppError);
-      expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-      expect(e.message).toEqual('"email" must be a valid email');
-    }
-  });
-
   it('should return error 400 if [password] parameter has less than 3 characters.', async () => {
     genericLegalPerson = { ...genericLegalPerson, password: 'Lo' };
     const legalPersonCreated: LegalPerson = new LegalPerson();
@@ -376,35 +317,6 @@ describe('UpdatePersonService', () => {
       expect(e).toBeInstanceOf(AppError);
       expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
       expect(e.message).toEqual('"avatarUrl" must be a valid uri');
-    }
-  });
-
-  it('should return error 400 if [document] parameter is not a valid cnpj.', async () => {
-    genericLegalPerson = { ...genericLegalPerson, document: 'dude this is not a valid document!' };
-    const legalPersonCreated: LegalPerson = new LegalPerson();
-    legalPersonCreated.create(genericLegalPerson);
-
-    const findOneByIdStub = jest
-      .spyOn(peopleRepository, 'findOneById')
-      .mockImplementation(async () => peopleRepository.findOneById(genericLegalPerson.personId))
-      .mockReturnValue(Promise.resolve(legalPersonCreated));
-
-    const getPersonSpy = jest
-      .spyOn(personRegistry, 'getPerson')
-      .mockImplementation(() => personRegistry.getPerson(genericLegalPerson))
-      .mockReturnValue(legalPersonCreated);
-
-    try {
-      await updatePersonService.execute(genericLegalPerson);
-    } catch (e) {
-      expect(findOneByIdStub).toHaveBeenCalledTimes(1);
-      expect(findOneByIdStub).toHaveBeenCalledWith(genericLegalPerson.personId);
-      expect(getPersonSpy).toHaveBeenCalledTimes(1);
-      expect(e).toBeInstanceOf(AppError);
-      expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-      expect(e.message).toEqual(
-        '"document" failed custom validation because it is not in the correct format or is invalid',
-      );
     }
   });
 
@@ -462,34 +374,239 @@ describe('UpdatePersonService', () => {
     }
   });
 
-  it('should be able to update a legal person from the database.', async () => {
-    const legalPersonCreated: LegalPerson = new LegalPerson();
-    legalPersonCreated.create(genericLegalPerson);
+  describe('LegalPerson', () => {
+    it('should return error 400 if [corporateName] parameter has more than 100 characters.', async () => {
+      genericLegalPerson = {
+        ...genericLegalPerson,
+        corporateName:
+          'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. ' +
+          'Aenean massa. Tum sociis natoque penatibus et magnis dis parturient.',
+      };
+      const legalPersonCreated: LegalPerson = new LegalPerson();
+      legalPersonCreated.create(genericLegalPerson);
 
-    const findOneByIdStub = jest
-      .spyOn(peopleRepository, 'findOneById')
-      .mockImplementation(async () => peopleRepository.findOneById(genericLegalPerson.personId))
-      .mockReturnValue(Promise.resolve(legalPersonCreated));
+      const findOneByIdStub = jest
+        .spyOn(peopleRepository, 'findOneById')
+        .mockImplementation(async () => peopleRepository.findOneById(genericLegalPerson.personId))
+        .mockReturnValue(Promise.resolve(legalPersonCreated));
 
-    const getPersonSpy = jest
-      .spyOn(personRegistry, 'getPerson')
-      .mockImplementation(() => personRegistry.getPerson(genericLegalPerson))
-      .mockReturnValue(legalPersonCreated);
+      const getPersonSpy = jest
+        .spyOn(personRegistry, 'getPerson')
+        .mockImplementation(() => personRegistry.getPerson(genericLegalPerson))
+        .mockReturnValue(legalPersonCreated);
 
-    const updatedPersonSpy = jest
-      .spyOn(peopleRepository, 'update')
-      .mockImplementation(async () => peopleRepository.update(genericLegalPerson))
-      .mockReturnValue(Promise.resolve(1));
+      try {
+        await updatePersonService.execute(genericLegalPerson);
+      } catch (e) {
+        expect(findOneByIdStub).toHaveBeenCalledTimes(1);
+        expect(findOneByIdStub).toHaveBeenCalledWith(genericLegalPerson.personId);
+        expect(getPersonSpy).toHaveBeenCalledTimes(1);
+        expect(e).toBeInstanceOf(AppError);
+        expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+        expect(e.message).toEqual('"corporateName" length must be less than or equal to 100 characters long');
+      }
+    });
 
-    const updatedPerson = await updatePersonService.execute(genericLegalPerson);
+    it('should return error 400 if [corporateName] parameter has less than 3 characters.', async () => {
+      genericLegalPerson = { ...genericLegalPerson, corporateName: 'Lo' };
+      const legalPersonCreated: LegalPerson = new LegalPerson();
+      legalPersonCreated.create(genericLegalPerson);
 
-    expect(findOneByIdStub).toHaveBeenCalledTimes(1);
-    expect(findOneByIdStub).toHaveBeenCalledWith(genericLegalPerson.personId);
+      const findOneByIdStub = jest
+        .spyOn(peopleRepository, 'findOneById')
+        .mockImplementation(async () => peopleRepository.findOneById(genericLegalPerson.personId))
+        .mockReturnValue(Promise.resolve(legalPersonCreated));
 
-    expect(getPersonSpy).toHaveBeenCalledTimes(1);
-    expect(updatedPersonSpy).toHaveBeenCalledTimes(1);
+      const getPersonSpy = jest
+        .spyOn(personRegistry, 'getPerson')
+        .mockImplementation(() => personRegistry.getPerson(genericLegalPerson))
+        .mockReturnValue(legalPersonCreated);
 
-    expect(updatedPerson).toHaveProperty('success');
-    expect(updatedPerson).toEqual({ success: true });
+      try {
+        await updatePersonService.execute(genericLegalPerson);
+      } catch (e) {
+        expect(findOneByIdStub).toHaveBeenCalledTimes(1);
+        expect(findOneByIdStub).toHaveBeenCalledWith(genericLegalPerson.personId);
+        expect(getPersonSpy).toHaveBeenCalledTimes(1);
+        expect(e).toBeInstanceOf(AppError);
+        expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+        expect(e.message).toEqual('"corporateName" length must be at least 3 characters long');
+      }
+    });
+
+    it('should return error 400 if [document] parameter is not a valid cnpj.', async () => {
+      genericLegalPerson = { ...genericLegalPerson, document: 'dude this is not a valid document!' };
+      const legalPersonCreated: LegalPerson = new LegalPerson();
+      legalPersonCreated.create(genericLegalPerson);
+
+      const findOneByIdStub = jest
+        .spyOn(peopleRepository, 'findOneById')
+        .mockImplementation(async () => peopleRepository.findOneById(genericLegalPerson.personId))
+        .mockReturnValue(Promise.resolve(legalPersonCreated));
+
+      const getPersonSpy = jest
+        .spyOn(personRegistry, 'getPerson')
+        .mockImplementation(() => personRegistry.getPerson(genericLegalPerson))
+        .mockReturnValue(legalPersonCreated);
+
+      try {
+        await updatePersonService.execute(genericLegalPerson);
+      } catch (e) {
+        expect(findOneByIdStub).toHaveBeenCalledTimes(1);
+        expect(findOneByIdStub).toHaveBeenCalledWith(genericLegalPerson.personId);
+        expect(getPersonSpy).toHaveBeenCalledTimes(1);
+        expect(e).toBeInstanceOf(AppError);
+        expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+        expect(e.message).toEqual(
+          '"document" failed custom validation because it is not in the correct format or is invalid',
+        );
+      }
+    });
+
+    it('should be able to update a legal person from the database.', async () => {
+      const legalPersonCreated: LegalPerson = new LegalPerson();
+      legalPersonCreated.create(genericLegalPerson);
+
+      const findOneByIdStub = jest
+        .spyOn(peopleRepository, 'findOneById')
+        .mockImplementation(async () => peopleRepository.findOneById(genericLegalPerson.personId))
+        .mockReturnValue(Promise.resolve(legalPersonCreated));
+
+      const getPersonSpy = jest
+        .spyOn(personRegistry, 'getPerson')
+        .mockImplementation(() => personRegistry.getPerson(genericLegalPerson))
+        .mockReturnValue(legalPersonCreated);
+
+      const updatedPersonSpy = jest
+        .spyOn(peopleRepository, 'update')
+        .mockImplementation(async () => peopleRepository.update(genericLegalPerson))
+        .mockReturnValue(Promise.resolve(1));
+
+      const updatedPerson = await updatePersonService.execute(genericLegalPerson);
+
+      expect(findOneByIdStub).toHaveBeenCalledTimes(1);
+      expect(findOneByIdStub).toHaveBeenCalledWith(genericLegalPerson.personId);
+
+      expect(getPersonSpy).toHaveBeenCalledTimes(1);
+      expect(updatedPersonSpy).toHaveBeenCalledTimes(1);
+
+      expect(updatedPerson).toHaveProperty('success');
+      expect(updatedPerson).toEqual({ success: true });
+    });
+  });
+
+  describe('NaturalPerson', () => {
+    it('should return error 400 if [document] parameter is not a valid cpf.', async () => {
+      genericNaturalPerson = { ...genericNaturalPerson, document: 'dude this is not a valid document!' };
+      const naturalPersonCreated: NaturalPerson = new NaturalPerson();
+      naturalPersonCreated.create(genericNaturalPerson);
+
+      const findOneByIdStub = jest
+        .spyOn(peopleRepository, 'findOneById')
+        .mockImplementation(async () => peopleRepository.findOneById(genericNaturalPerson.personId))
+        .mockReturnValue(Promise.resolve(naturalPersonCreated));
+
+      const getPersonSpy = jest
+        .spyOn(personRegistry, 'getPerson')
+        .mockImplementation(() => personRegistry.getPerson(genericNaturalPerson))
+        .mockReturnValue(naturalPersonCreated);
+
+      try {
+        await updatePersonService.execute(genericNaturalPerson);
+      } catch (e) {
+        expect(findOneByIdStub).toHaveBeenCalledTimes(1);
+        expect(findOneByIdStub).toHaveBeenCalledWith(genericNaturalPerson.personId);
+        expect(getPersonSpy).toHaveBeenCalledTimes(1);
+        expect(e).toBeInstanceOf(AppError);
+        expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+        expect(e.message).toEqual(
+          '"document" failed custom validation because it is not in the correct format or is invalid',
+        );
+      }
+    });
+
+    it('should return error 400 if [birthDate] parameter is not a valid date.', async () => {
+      genericNaturalPerson = { ...genericNaturalPerson, birthDate: 'dude this is not a valid date!' };
+      const naturalPersonCreated: NaturalPerson = new NaturalPerson();
+      naturalPersonCreated.create(genericNaturalPerson);
+
+      const findOneByIdStub = jest
+        .spyOn(peopleRepository, 'findOneById')
+        .mockImplementation(async () => peopleRepository.findOneById(genericNaturalPerson.personId))
+        .mockReturnValue(Promise.resolve(naturalPersonCreated));
+
+      const getPersonSpy = jest
+        .spyOn(personRegistry, 'getPerson')
+        .mockImplementation(() => personRegistry.getPerson(genericNaturalPerson))
+        .mockReturnValue(naturalPersonCreated);
+
+      try {
+        await updatePersonService.execute(genericLegalPerson);
+      } catch (e) {
+        expect(findOneByIdStub).toHaveBeenCalledTimes(1);
+        expect(findOneByIdStub).toHaveBeenCalledWith(genericNaturalPerson.personId);
+        expect(getPersonSpy).toHaveBeenCalledTimes(1);
+        expect(e).toBeInstanceOf(AppError);
+        expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+        expect(e.message).toEqual('"birthDate" must be a valid date');
+      }
+    });
+
+    it('should return error 400 if [sex] parameter is invalid.', async () => {
+      genericNaturalPerson = { ...genericNaturalPerson, sex: 'dude this is not a valid sex!' };
+      const naturalPersonCreated: NaturalPerson = new NaturalPerson();
+      naturalPersonCreated.create(genericNaturalPerson);
+
+      const findOneByIdStub = jest
+        .spyOn(peopleRepository, 'findOneById')
+        .mockImplementation(async () => peopleRepository.findOneById(genericNaturalPerson.personId))
+        .mockReturnValue(Promise.resolve(naturalPersonCreated));
+
+      const getPersonSpy = jest
+        .spyOn(personRegistry, 'getPerson')
+        .mockImplementation(() => personRegistry.getPerson(genericNaturalPerson))
+        .mockReturnValue(naturalPersonCreated);
+      try {
+        await updatePersonService.execute(genericNaturalPerson);
+      } catch (e) {
+        expect(findOneByIdStub).toHaveBeenCalledTimes(1);
+        expect(findOneByIdStub).toHaveBeenCalledWith(genericNaturalPerson.personId);
+        expect(getPersonSpy).toHaveBeenCalledTimes(1);
+        expect(e).toBeInstanceOf(AppError);
+        expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+        expect(e.message).toEqual('"sex" must be one of [masculine, feminine]');
+      }
+    });
+
+    it('should be able to update a natural person from the database.', async () => {
+      const naturalPersonCreated: NaturalPerson = new NaturalPerson();
+      naturalPersonCreated.create(genericNaturalPerson);
+
+      const findOneByIdStub = jest
+        .spyOn(peopleRepository, 'findOneById')
+        .mockImplementation(async () => peopleRepository.findOneById(genericNaturalPerson.personId))
+        .mockReturnValue(Promise.resolve(naturalPersonCreated));
+
+      const getPersonSpy = jest
+        .spyOn(personRegistry, 'getPerson')
+        .mockImplementation(() => personRegistry.getPerson(genericNaturalPerson))
+        .mockReturnValue(naturalPersonCreated);
+
+      const updatedPersonSpy = jest
+        .spyOn(peopleRepository, 'update')
+        .mockImplementation(async () => peopleRepository.update(genericNaturalPerson))
+        .mockReturnValue(Promise.resolve(1));
+
+      const updatedPerson = await updatePersonService.execute(genericNaturalPerson);
+
+      expect(findOneByIdStub).toHaveBeenCalledTimes(1);
+      expect(findOneByIdStub).toHaveBeenCalledWith(genericNaturalPerson.personId);
+
+      expect(getPersonSpy).toHaveBeenCalledTimes(1);
+      expect(updatedPersonSpy).toHaveBeenCalledTimes(1);
+
+      expect(updatedPerson).toHaveProperty('success');
+      expect(updatedPerson).toEqual({ success: true });
+    });
   });
 });
