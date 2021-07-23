@@ -548,9 +548,7 @@ describe('UpdatePersonService', () => {
         expect(getPersonSpy).toHaveBeenCalledTimes(1);
         expect(e).toBeInstanceOf(AppError);
         expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-        expect(e.message).toEqual(
-          '"birthDate" must be a valid date',
-        );
+        expect(e.message).toEqual('"birthDate" must be a valid date');
       }
     });
 
