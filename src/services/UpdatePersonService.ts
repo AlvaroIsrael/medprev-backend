@@ -3,7 +3,7 @@ import Person from '../models/Person';
 import PeopleRepository from '../repositories/PeopleRepository';
 import PersonRegistry from './PersonRegistry';
 import AppError from '../errors/AppError';
-import { IPersonRequest } from '../interfaces/IPersonRequest';
+import { IPersonUpdateRequest } from '../interfaces/IPersonUpdateRequest';
 
 type IPersonResponse = {
   success: boolean;
@@ -33,7 +33,7 @@ class UpdatePersonService {
     avatarUrl,
     sex,
     birthDate,
-  }: IPersonRequest): Promise<IPersonResponse> => {
+  }: IPersonUpdateRequest): Promise<IPersonResponse> => {
     if (!personId) {
       throw new AppError('Person not found');
     }

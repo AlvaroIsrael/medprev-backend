@@ -1,6 +1,7 @@
 import { IPerson } from '../interfaces/IPerson';
 import { IPersonRequest } from '../interfaces/IPersonRequest';
 import Address from './Address';
+import { IPersonUpdateRequest } from '../interfaces/IPersonUpdateRequest';
 
 abstract class Person implements IPerson {
   personId: string;
@@ -47,6 +48,22 @@ abstract class Person implements IPerson {
     sex,
     birthDate,
   }: IPersonRequest): void;
+
+  abstract createWithId({
+    personId,
+    kind,
+    role,
+    document,
+    corporateName,
+    name,
+    email,
+    password,
+    landlinePhoneNumber,
+    mobilePhoneNumber,
+    avatarUrl,
+    sex,
+    birthDate,
+  }: IPersonUpdateRequest): void;
 }
 
 export default Person;

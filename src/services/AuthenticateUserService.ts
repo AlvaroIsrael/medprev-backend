@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { sign } from 'jsonwebtoken';
 import { compare } from 'bcryptjs';
 import PeopleRepository from '../repositories/PeopleRepository';
@@ -17,17 +18,17 @@ class AuthenticateUserService {
     const user = await this.peopleRepository.findOne(document);
 
     if (!user) {
-      throw new AppError('Incorrect email or password');
+      throw new AppError('Incorrect document or password');
     }
 
     if (!user.password) {
-      throw new AppError('Incorrect email or password');
+      throw new AppError('Incorrect document or password');
     }
 
     const passwordMatches = await compare(password, user.password);
 
     if (!passwordMatches) {
-      throw new AppError('Incorrect email or password');
+      throw new AppError('Incorrect document or password');
     }
 
     const { secret, expiresIn } = authConfig.jwt;
@@ -38,10 +39,12 @@ class AuthenticateUserService {
       },
       secret,
       {
-        subject: user.personId,
+        subject: user.personId.toString(),
         expiresIn,
       },
     );
+
+    delete user.password;
 
     return { user, token };
   };

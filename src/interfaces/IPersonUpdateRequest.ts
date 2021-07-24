@@ -1,4 +1,5 @@
-export type IPersonRequest = {
+export type IPersonUpdateRequest = {
+  personId: string;
   kind: 'legal' | 'natural';
   role: 'admin' | 'default';
   corporateName: string;

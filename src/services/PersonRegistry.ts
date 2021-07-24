@@ -3,6 +3,7 @@ import NaturalPerson from '../models/NaturalPerson';
 import AppError from '../errors/AppError';
 import LegalPerson from '../models/LegalPerson';
 import { IPersonRequest } from '../interfaces/IPersonRequest';
+import { IPersonUpdateRequest } from '../interfaces/IPersonUpdateRequest';
 
 class PersonRegistry {
   private people: Map<string, Person> = new Map<string, Person>();
@@ -37,6 +38,42 @@ class PersonRegistry {
     const person = this.instanciatePerson(kind);
 
     person.create({
+      kind,
+      role,
+      document,
+      corporateName,
+      name,
+      email,
+      password,
+      landlinePhoneNumber,
+      mobilePhoneNumber,
+      avatarUrl,
+      sex,
+      birthDate,
+    });
+
+    return person;
+  };
+
+  public getPersonWithId = ({
+    personId,
+    kind,
+    role,
+    document,
+    corporateName,
+    name,
+    email,
+    password,
+    landlinePhoneNumber,
+    mobilePhoneNumber,
+    avatarUrl,
+    sex,
+    birthDate,
+  }: IPersonUpdateRequest): Person => {
+    const person = this.instanciatePerson(kind);
+
+    person.createWithId({
+      personId,
       kind,
       role,
       document,
