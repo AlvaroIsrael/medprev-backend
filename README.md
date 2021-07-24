@@ -1,4 +1,4 @@
-<h1 align='center'>Medprev Backend</h1>
+<h1 align='center'>Medprev Backend Code Challenge</h1>
 
 <h1 align='center'>
     <img alt='Medprev Logo' src='https://raw.githubusercontent.com/AlvaroIsrael/medprev-backend/master/src/assets/img/medprev-logo.svg'/>
