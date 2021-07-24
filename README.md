@@ -1,5 +1,10 @@
 <h1 align='center'>Medprev Backend</h1>
 
+<h1 align='center'>
+    <img alt='Medprev Logo' src='https://raw.githubusercontent.com/AlvaroIsrael/medprev-backend/master/src/assets/img/medprev-logo.svg'/>
+  <br>
+</h1>
+
 <h4 align='center'>🏥 A medical backend code challenge!</h4>
 
 <div align='center'>
@@ -13,10 +18,7 @@
 
 <h4 align='center'>Made with ❤️ by Alvaro Israel 👏🏻 <a href='https://www.linkedin.com/in/alvaroisraeldesenvolvedor/'>
 Get in Touch!</a></h4>
-
-### ⭐️ Show your support
-
-Hit the ⭐️ button if you like this project!
+<p align="center">Hit the ⭐ button if you like this project!</p>
 
 ### 💻 How to Run
 
@@ -85,6 +87,6 @@ $ git push origin feature/myAewsomeFeature
 - [JestJs](https://jestjs.io/)
 - [SQLite](https://www.sqlite.org/index.html)
 
-### 🧾 License
+### 📝 License
 
 This software is under GNU General Public License v3.0. See [LICENSE](LICENSE.md) for more details.
