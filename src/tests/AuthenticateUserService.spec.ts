@@ -46,7 +46,7 @@ describe('AuthenticateUserService', () => {
       expect(findOneSpy).toHaveBeenCalledWith(user.document);
       expect(e).toBeInstanceOf(AppError);
       expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-      expect(e.message).toEqual('Incorrect email or password');
+      expect(e.message).toEqual('Incorrect document or password');
     }
   });
 
@@ -68,7 +68,7 @@ describe('AuthenticateUserService', () => {
       expect(findOneSpy).toHaveBeenCalledWith(user.document);
       expect(e).toBeInstanceOf(AppError);
       expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-      expect(e.message).toEqual('Incorrect email or password');
+      expect(e.message).toEqual('Incorrect document or password');
     }
   });
 
@@ -91,7 +91,7 @@ describe('AuthenticateUserService', () => {
       expect(findOneSpy).toHaveBeenCalledWith(user.document);
       expect(e).toBeInstanceOf(AppError);
       expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-      expect(e.message).toEqual('Incorrect email or password');
+      expect(e.message).toEqual('Incorrect document or password');
     }
   });
 
@@ -113,7 +113,7 @@ describe('AuthenticateUserService', () => {
       expect(findOneSpy).toHaveBeenCalledWith(user.document);
       expect(e).toBeInstanceOf(AppError);
       expect(e.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-      expect(e.message).toEqual('Incorrect email or password');
+      expect(e.message).toEqual('Incorrect document or password');
     }
   });
 
