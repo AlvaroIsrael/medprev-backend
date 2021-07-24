@@ -3,6 +3,7 @@ import PersonRegistry from '../services/PersonRegistry';
 import Person from '../models/Person';
 import connection from '../database/connection';
 import { IPersonRequest } from '../interfaces/IPersonRequest';
+import { IPersonUpdateRequest } from '../interfaces/IPersonUpdateRequest';
 
 interface IListRequest {
   page: number;
@@ -123,6 +124,7 @@ class PeopleRepository {
 
     people.forEach(personInDataBase => {
       const {
+        personId,
         kind,
         role,
         corporateName,
@@ -136,7 +138,8 @@ class PeopleRepository {
         birthDate,
       } = personInDataBase;
 
-      person = new PersonRegistry().getPerson({
+      person = new PersonRegistry().getPersonWithId({
+        personId,
         kind,
         role,
         document,
@@ -189,7 +192,7 @@ class PeopleRepository {
     avatarUrl,
     sex,
     birthDate,
-  }: IPersonRequest): Promise<number> {
+  }: IPersonUpdateRequest): Promise<number> {
     return this.connection('people')
       .update({
         kind,

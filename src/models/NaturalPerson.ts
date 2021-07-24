@@ -1,6 +1,7 @@
 import naturalPersonSchema from '../helpers/naturalPerson.schema';
 import Person from './Person';
 import { IPersonRequest } from '../interfaces/IPersonRequest';
+import { IPersonUpdateRequest } from '../interfaces/IPersonUpdateRequest';
 
 class NaturalPerson extends Person {
   sex: 'masculine' | 'feminine';
@@ -37,6 +38,35 @@ class NaturalPerson extends Person {
     sex,
     birthDate,
   }: IPersonRequest): void {
+    this.kind = kind;
+    this.role = role;
+    this.document = document;
+    this.documentName = 'cpf';
+    this.name = name;
+    this.email = email;
+    this.password = password;
+    this.landlinePhoneNumber = landlinePhoneNumber;
+    this.mobilePhoneNumber = mobilePhoneNumber;
+    this.avatarUrl = avatarUrl;
+    this.sex = sex;
+    this.birthDate = birthDate;
+  }
+
+  createWithId({
+    personId,
+    kind,
+    role,
+    document,
+    name,
+    email,
+    password,
+    landlinePhoneNumber,
+    mobilePhoneNumber,
+    avatarUrl,
+    sex,
+    birthDate,
+  }: IPersonUpdateRequest): void {
+    this.personId = personId;
     this.kind = kind;
     this.role = role;
     this.document = document;

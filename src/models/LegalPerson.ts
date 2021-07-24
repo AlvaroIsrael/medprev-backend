@@ -1,6 +1,7 @@
 import legalPersonSchema from '../helpers/legalPerson.schema';
 import Person from './Person';
 import { IPersonRequest } from '../interfaces/IPersonRequest';
+import { IPersonUpdateRequest } from '../interfaces/IPersonUpdateRequest';
 
 class LegalPerson extends Person {
   corporateName: string;
@@ -33,6 +34,33 @@ class LegalPerson extends Person {
     mobilePhoneNumber,
     avatarUrl,
   }: IPersonRequest): void {
+    this.kind = kind;
+    this.role = role;
+    this.document = document;
+    this.documentName = 'cnpj';
+    this.corporateName = corporateName;
+    this.name = name;
+    this.email = email;
+    this.password = password;
+    this.landlinePhoneNumber = landlinePhoneNumber;
+    this.mobilePhoneNumber = mobilePhoneNumber;
+    this.avatarUrl = avatarUrl;
+  }
+
+  createWithId({
+    personId,
+    kind,
+    role,
+    document,
+    corporateName,
+    name,
+    email,
+    password,
+    landlinePhoneNumber,
+    mobilePhoneNumber,
+    avatarUrl,
+  }: IPersonUpdateRequest): void {
+    this.personId = personId;
     this.kind = kind;
     this.role = role;
     this.document = document;
